@@ -42,20 +42,13 @@ class DraggableScrollRegister extends StatelessWidget {
           const SizedBox(height: 30),
           const _TextFieldCustom(text: 'Contraseña', icon: Icons.vpn_key_outlined),
           const SizedBox(height: 90),
-          Container(
-            height: 55,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30.0),
-              color: const Color(0xff353759),
-            ),
-            child: TextButton(
-              child: const TextFrave(
-                  text: 'Registrarse',
-                  fontSize: 22,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold),
-              onPressed: () {},
-            ),
+          TextButton(
+            child: const TextFrave(
+                text: 'Registrarse',
+                fontSize: 22,
+                color: Colors.white,
+                fontWeight: FontWeight.bold),
+            onPressed: () {},
           ),
         ],
       ),
