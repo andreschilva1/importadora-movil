@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:projectsw2_movil/providers/employee_provider.dart';
+import 'package:projectsw2_movil/providers/warehouse_provider.dart';
 import 'package:projectsw2_movil/routes/app_routes.dart';
 import 'package:projectsw2_movil/services/services.dart';
 import 'package:projectsw2_movil/theme/app_theme.dart';
@@ -15,7 +17,9 @@ class AppState extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthService()),      
+        ChangeNotifierProvider(create: (_) => AuthService()), 
+        ChangeNotifierProvider(create: (_) => WarehouseProvider()),
+        ChangeNotifierProvider(create: (_) => EmployeeProvider()),     
         ], 
       child:const MyApp(),
     );
