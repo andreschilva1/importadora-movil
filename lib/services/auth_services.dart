@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AuthService extends ChangeNotifier {
-  static const String _baseUrl = 'http://10.0.2.2:8000';
+  static const String _baseUrl = 'http://192.168.0.6:8000';
   static User? user;
   bool isLoading = false;
 
@@ -47,7 +47,25 @@ class AuthService extends ChangeNotifier {
       //throw Exception('Failed to login');
     }
     
+  }
 
+  void register(String name, String email, String password, String celular) async {
+
+    const url = '$_baseUrl/api/createClient';
+
+    final response = await http.post(Uri.parse(url), body: {
+      'name': name,
+      'email': email,
+      'password': password,
+      'celular': celular
+    });
+
+    if (200 == response.statusCode) {
+      print('success register');
+    } else {
+      print('Failed to register');
+    }
+    
   }
 
   Future<bool> checkAuth() async {
