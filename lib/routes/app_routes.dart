@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projectsw2_movil/models/models.dart';
 import 'package:projectsw2_movil/screens/employee/employee.dart';
+import 'package:projectsw2_movil/screens/metodoEnvio/metodo_envio_screen.dart';
 import 'package:projectsw2_movil/screens/screens.dart';
 
 class AppRoutes {
@@ -11,6 +12,7 @@ class AppRoutes {
     Ruta(name: 'Perfil', icon: Icons.person, route: 'perfil', screen: const PerfilScreen()),
     Ruta(name: 'Almacén', icon: Icons.warehouse_rounded, route: 'warehouse', screen: const WarehouseScreen()),
     Ruta(name: 'Empleados', icon: Icons.person_2_outlined, route: 'empleado', screen: const EmployeeScreen()),
+    Ruta(name: 'MetodoEnvio', icon: Icons.local_shipping_outlined, route: 'metodoEnvio', screen: const MetodoEnvioScreen()),
   ];
 
   static Map<String, Widget Function(BuildContext)> getAppRoutes() {

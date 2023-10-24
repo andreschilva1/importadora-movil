@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projectsw2_movil/providers/employee_provider.dart';
+import 'package:projectsw2_movil/providers/metodo_envio_provider.dart';
 import 'package:projectsw2_movil/providers/warehouse_provider.dart';
 import 'package:projectsw2_movil/routes/app_routes.dart';
 import 'package:projectsw2_movil/services/services.dart';
@@ -19,7 +20,8 @@ class AppState extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthService()), 
         ChangeNotifierProvider(create: (_) => WarehouseProvider()),
-        ChangeNotifierProvider(create: (_) => EmployeeProvider()),     
+        ChangeNotifierProvider(create: (_) => EmployeeProvider()),  
+        ChangeNotifierProvider(create: (_) => MetodoEnvioProvider()),  
         ], 
       child:const MyApp(),
     );
