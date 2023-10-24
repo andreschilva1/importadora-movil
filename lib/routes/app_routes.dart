@@ -11,6 +11,8 @@ class AppRoutes {
     Ruta(name: 'Perfil', icon: Icons.person, route: 'perfil', screen: const PerfilScreen()),
     Ruta(name: 'Almacén', icon: Icons.warehouse_rounded, route: 'warehouse', screen: const WarehouseScreen()),
     Ruta(name: 'Empleados', icon: Icons.person_2_outlined, route: 'empleado', screen: const EmployeeScreen()),
+    Ruta(name: 'Registrar Paquetes', icon: Icons.add_box_outlined, route: 'resgistrarPaquete', screen: const CreatePaqueteScreen()),
+    
   ];
 
   static Map<String, Widget Function(BuildContext)> getAppRoutes() {

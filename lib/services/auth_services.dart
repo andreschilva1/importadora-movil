@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:projectsw2_movil/models/models.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:projectsw2_movil/services/api_service.dart';
 
 class AuthService extends ChangeNotifier {
-  static const String _baseUrl = 'http://192.168.0.6:8000';
+  static final String _baseUrl = ApiService.baseUrl;
   static User? user;
   bool isLoading = false;
 
@@ -16,7 +17,8 @@ class AuthService extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
 
-    const url = '$_baseUrl/api/login';
+
+    String url = '$_baseUrl/api/login';
 
     final response = await http.post(Uri.parse(url), body: {
       'email': email,
@@ -51,7 +53,7 @@ class AuthService extends ChangeNotifier {
 
   void register(String name, String email, String password, String celular) async {
 
-    const url = '$_baseUrl/api/createClient';
+    String url = '$_baseUrl/api/createClient';
 
     final response = await http.post(Uri.parse(url), body: {
       'name': name,
@@ -73,7 +75,7 @@ class AuthService extends ChangeNotifier {
     if (token == null) {
       return false;
     }
-    const url = '$_baseUrl/api/user';
+    String  url = '$_baseUrl/api/user';
     final response = await http.get(Uri.parse(url), headers: {
       'Authorization': 'Bearer $token',
     });
@@ -88,7 +90,7 @@ class AuthService extends ChangeNotifier {
   Future<void> logout() async {
     final token = await _storage.read(key: 'token');
     if (token != null) {
-      const url = '$_baseUrl/api/logout';
+      String  url = '$_baseUrl/api/logout';
       final response = await http.get(Uri.parse(url),headers: {
         'Authorization': 'Bearer $token',
       });
