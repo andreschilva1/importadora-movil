@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:projectsw2_movil/helpers/alert.dart';
 import 'package:projectsw2_movil/models/metodo_envio.dart';
-import 'package:projectsw2_movil/providers/metodo_envio_provider.dart';
 import 'package:projectsw2_movil/screens/metodoEnvio/create_metodo_envio.dart';
+import 'package:projectsw2_movil/services/metodo_envio_service.dart';
 import 'package:projectsw2_movil/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -17,7 +17,7 @@ class _MetodoEnvioScreenState extends State<MetodoEnvioScreen> {
   @override
   void initState() {
     super.initState();
-    Provider.of<MetodoEnvioProvider>(context, listen: false).fetchMetodoEnvios();
+    Provider.of<MetodoEnvioService>(context, listen: false).fetchMetodoEnvios();
   }
 
   @override
@@ -42,7 +42,7 @@ class _MetodoEnvioScreenState extends State<MetodoEnvioScreen> {
         title: const Text('Métodos de Envio'),
       ),
       body: Center(
-        child: Consumer<MetodoEnvioProvider>(builder: (context, metodoEnvioProvider, child) {
+        child: Consumer<MetodoEnvioService>(builder: (context, metodoEnvioProvider, child) {
           if (metodoEnvioProvider.metodoEnvios!.isEmpty) {
             return const CircularProgressIndicator();
           }

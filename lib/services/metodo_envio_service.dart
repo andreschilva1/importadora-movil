@@ -3,63 +3,61 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:projectsw2_movil/helpers/alert.dart';
 import 'dart:convert';
-import 'package:projectsw2_movil/models/empleado.dart';
-import 'package:projectsw2_movil/providers/server_provider.dart';
+import 'package:projectsw2_movil/models/metodo_envio.dart';
+import 'package:projectsw2_movil/services/server_service.dart';
 
-class EmployeeProvider extends ChangeNotifier {
-  List<Empleado>? _empleados = [];
+class MetodoEnvioService extends ChangeNotifier {
+  List<MetodoEnvio>? _metodoEnvios = [];
 
-  List<Empleado>? get empleados => _empleados;
+  List<MetodoEnvio>? get metodoEnvios => _metodoEnvios;
 
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
-  Future<void> fetchEmployees() async {
-    _empleados = await getEmployees();
+  Future<void> fetchMetodoEnvios() async {
+    _metodoEnvios = await getMetodoEnvios();
     notifyListeners();
   }
 
-  Future<List<Empleado>> getEmployees() async {
-    final urlPrincipal = ServerProvider().url;
+  Future<List<MetodoEnvio>> getMetodoEnvios() async {
+    final urlPrincipal = ServerService().url;
     final token = await _storage.read(key: 'token');
-    final url = Uri.parse('$urlPrincipal/api/getEmployees');
+    final url = Uri.parse('$urlPrincipal/api/getMetodoEnvio');
     final response = await http.get(url, headers: {
       'Authorization': 'Bearer $token',
     });
 
     if (200 == response.statusCode) {
       final respuesta = jsonDecode(response.body);
-      final List<Empleado> empleados =
-          empleadoFromJson(jsonEncode(respuesta['data']));
-      return empleados;
+      final List<MetodoEnvio> metodoEnvios =
+          metodoEnvioFromJson(jsonEncode(respuesta['data']));
+      return metodoEnvios;
     } else {
       return List.empty();
     }
   }
 
-  void crearEmpleado(String name, String email, String password, String celular,
-      BuildContext context) async {
+  void crearMetodoEnvio(String transportista, String metodo, String costo_kg, BuildContext context) async {
     mostrarLoading(context);
     final token = await _storage.read(key: 'token');
-    final url = ServerProvider().url;
+    final url = ServerService().url;
 
     final response = await http.post(
-      Uri.parse('$url/api/createEmployee'),
+      Uri.parse('$url/api/createMetodoEnvio'),
       headers: {
         "Content-Type": "application/json",
         'Authorization': 'Bearer $token',
       },
       body: jsonEncode({
-        'name': name,
-        'email': email,
-        'password': password,
-        'celular': celular,
+        'transportista': transportista,
+        'metodo': metodo,
+        'costo_kg': costo_kg,
       }),
     );
 
     final respuesta = jsonDecode(response.body);
     if (200 == response.statusCode) {
-      fetchEmployees(); // Actualizar el estado después de crear una consulta
-      Navigator.pushReplacementNamed(context, 'empleado');
+      fetchMetodoEnvios(); // Actualizar el estado después de crear una consulta
+      Navigator.pushReplacementNamed(context, 'metodoEnvio');
     } else {
       Navigator.pop(context);
       final mensajeErroneo = jsonEncode(respuesta['mensaje']);
@@ -70,8 +68,8 @@ class EmployeeProvider extends ChangeNotifier {
   eliminar(BuildContext context, int id) async {
     mostrarLoading(context);
     final token = await _storage.read(key: 'token');
-    final url = ServerProvider().url;
-    final response = await http.delete(Uri.parse('$url/api/deleteEmployee'),
+    final url = ServerService().url;
+    final response = await http.delete(Uri.parse('$url/api/deleteMetodoEnvio'),
         headers: {
           "Content-Type": "application/json",
           'Authorization': 'Bearer $token',
@@ -79,8 +77,8 @@ class EmployeeProvider extends ChangeNotifier {
         body: jsonEncode({'id': id.toString()}));
     final respuesta = jsonDecode(response.body);
     if (200 == response.statusCode) {
-      fetchEmployees();
-      Navigator.pushReplacementNamed(context, 'empleado');
+      fetchMetodoEnvios(); 
+      Navigator.pushReplacementNamed(context, 'metodoEnvio');
     } else {
       Navigator.pop(context);
       final mensajeErroneo = jsonEncode(respuesta['mensaje']);

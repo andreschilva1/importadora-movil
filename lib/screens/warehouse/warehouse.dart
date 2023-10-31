@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:projectsw2_movil/helpers/alert.dart';
 import 'package:projectsw2_movil/models/almacen.dart';
-import 'package:projectsw2_movil/providers/warehouse_provider.dart';
 import 'package:projectsw2_movil/screens/warehouse/create_warehouse.dart';
+import 'package:projectsw2_movil/services/services.dart';
 import 'package:projectsw2_movil/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -17,7 +17,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
   @override
   void initState() {
     super.initState();
-    Provider.of<WarehouseProvider>(context, listen: false).fetchWarehouses();
+    Provider.of<WarehouseService>(context, listen: false).fetchWarehouses();
   }
 
   @override
@@ -42,7 +42,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
         title: const Text('Almacenes'),
       ),
       body: Center(
-        child: Consumer<WarehouseProvider>(builder: (context, warehouseProvider, child) {
+        child: Consumer<WarehouseService>(builder: (context, warehouseProvider, child) {
           if (warehouseProvider.almacenes!.isEmpty) {
             return const CircularProgressIndicator();
           }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:projectsw2_movil/helpers/input_decoration.dart';
-import 'package:projectsw2_movil/providers/warehouse_provider.dart';
+import 'package:projectsw2_movil/services/services.dart';
 import 'package:projectsw2_movil/widgets/card_container.dart';
+import 'package:projectsw2_movil/widgets/text_form_customer.dart';
 import 'package:provider/provider.dart';
 
 class CreateWarehouseScreen extends StatelessWidget {
@@ -41,75 +41,40 @@ class CreateWarehouseScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    TextFormField(
-                      autocorrect: false,
-                      keyboardType: TextInputType.name,
-                      decoration: InputDecorations.authInputDecoration(
-                        hintText: 'Nombre',
-                        labelText: 'Nombre del almacén',
-                        prefixIcon: Icons.text_fields,
-                      ),
-                      controller: name,
-                      onChanged: (value) => value,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Ingrese el nombre';
-                        }
-                        return null;
-                      },
+                    TextFormCustomer(
+                      controller: name, 
+                      type: TextInputType.name, 
+                      icon: Icons.text_fields, 
+                      hintText: 'Nombre', 
+                      labelText: 'Nombre del almacén', 
+                      aviso: 'Ingrese el nombre',
                     ),
                     const SizedBox(height: 30),
-                    TextFormField(
-                      autocorrect: false,
-                      keyboardType: TextInputType.name,
-                      decoration: InputDecorations.authInputDecoration(
-                        hintText: 'Dirección',
-                        labelText: 'Dirección del almacén',
-                        prefixIcon: Icons.directions,
-                      ),
-                      controller: direccion,
-                      onChanged: (value) => value,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Ingrese la dirección';
-                        }
-                        return null;
-                      },
+                    TextFormCustomer(
+                      controller: direccion, 
+                      type: TextInputType.name, 
+                      icon: Icons.directions, 
+                      hintText: 'Dirección', 
+                      labelText: 'Dirección del almacén', 
+                      aviso: 'Ingrese la dirección',
                     ),
                     const SizedBox(height: 30),
-                    TextFormField(
-                      autocorrect: false,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecorations.authInputDecoration(
-                        hintText: 'Teléfono',
-                        labelText: 'Teléfono del almacén',
-                        prefixIcon: Icons.phone,
-                      ),
-                      controller: telefono,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Ingrese el teléfono';
-                        }
-                        return null;
-                      },
+                    TextFormCustomer(
+                      controller: telefono, 
+                      type: TextInputType.number, 
+                      icon: Icons.phone, 
+                      hintText: 'Teléfono', 
+                      labelText: 'Teléfono del almacén', 
+                      aviso: 'Ingrese el teléfono',
                     ),
                     const SizedBox(height: 30),
-                    TextFormField(
-                      autocorrect: false,
-                      keyboardType: TextInputType.streetAddress,
-                      decoration: InputDecorations.authInputDecoration(
-                        hintText: 'País',
-                        labelText: 'País del almacén',
-                        prefixIcon: Icons.flag,
-                      ),
-                      controller: pais,
-                      onChanged: (value) => value,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Ingrese el país';
-                        }
-                        return null;
-                      },
+                    TextFormCustomer(
+                      controller: pais, 
+                      type: TextInputType.streetAddress, 
+                      icon: Icons.flag, 
+                      hintText: 'País', 
+                      labelText: 'País del almacén', 
+                      aviso: 'Ingrese el país',
                     ),
                     const SizedBox(height: 30),
                     Container(
@@ -128,9 +93,12 @@ class CreateWarehouseScreen extends StatelessWidget {
                           onPressed: () {
                             if (formKey.currentState!.validate()) {
                               FocusScope.of(context).unfocus();
-                              Provider.of<WarehouseProvider>(context, listen: false)
-                                .crearAlmacen(name.text.trim(), direccion.text.trim(),
-                                    telefono.text.trim(), pais.text.trim(), context);
+                              Provider.of<WarehouseService>(context, listen: false).crearAlmacen(
+                                name.text.trim(),
+                                direccion.text.trim(),
+                                telefono.text.trim(),
+                                pais.text.trim(),
+                                context);
                             }
                           }),
                     ),

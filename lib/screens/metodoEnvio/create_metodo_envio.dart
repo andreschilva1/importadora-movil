@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:projectsw2_movil/helpers/input_decoration.dart';
-import 'package:projectsw2_movil/providers/metodo_envio_provider.dart';
+import 'package:projectsw2_movil/services/metodo_envio_service.dart';
 import 'package:projectsw2_movil/widgets/card_container.dart';
+import 'package:projectsw2_movil/widgets/text_form_customer.dart';
 import 'package:provider/provider.dart';
 
 class CreateMetodoEnvioScreen extends StatelessWidget {
@@ -40,57 +40,31 @@ class CreateMetodoEnvioScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    TextFormField(
-                      autocorrect: false,
-                      keyboardType: TextInputType.name,
-                      decoration: InputDecorations.authInputDecoration(
-                        hintText: 'Transportista',
-                        labelText: 'Transpostista del método de envío',
-                        prefixIcon: Icons.business_outlined,
-                      ),
-                      controller: transportista,
-                      onChanged: (value) => value,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Ingrese el transportista del método';
-                        }
-                        return null;
-                      },
+                    TextFormCustomer(
+                      controller: transportista, 
+                      type: TextInputType.name, 
+                      icon: Icons.business_outlined, 
+                      hintText: 'Transpostista', 
+                      labelText: 'Transpostista del método de envío', 
+                      aviso: 'Ingrese el transportista del método',
                     ),
                     const SizedBox(height: 30),
-                    TextFormField(
-                      autocorrect: false,
-                      keyboardType: TextInputType.name,
-                      decoration: InputDecorations.authInputDecoration(
-                        hintText: 'Método',
-                        labelText: 'Método del envío',
-                        prefixIcon: Icons.airplane_ticket_outlined,
-                      ),
-                      controller: metodo,
-                      onChanged: (value) => value,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Ingrese el método';
-                        }
-                        return null;
-                      },
+                    TextFormCustomer(
+                      controller: metodo, 
+                      type: TextInputType.name, 
+                      icon: Icons.airplane_ticket_outlined, 
+                      hintText: 'Método', 
+                      labelText: 'Método del envío', 
+                      aviso: 'Ingrese el método',
                     ),
                     const SizedBox(height: 30),
-                    TextFormField(
-                      autocorrect: false,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecorations.authInputDecoration(
-                        hintText: 'Costo por Kg',
-                        labelText: 'Costo por Kg del método de envío',
-                        prefixIcon: Icons.money_outlined,
-                      ),
-                      controller: costoKg,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Ingrese el costo por Kg';
-                        }
-                        return null;
-                      },
+                    TextFormCustomer(
+                      controller: costoKg, 
+                      type: TextInputType.number, 
+                      icon: Icons.money_outlined, 
+                      hintText: 'Costo por Kg', 
+                      labelText: 'Costo por Kg del método de envío', 
+                      aviso: 'Ingrese el costo por Kg',
                     ),
                     const SizedBox(height: 30),
                     Container(
@@ -109,7 +83,7 @@ class CreateMetodoEnvioScreen extends StatelessWidget {
                           onPressed: () {
                             if (formKey.currentState!.validate()) {
                               FocusScope.of(context).unfocus();
-                              Provider.of<MetodoEnvioProvider>(context,
+                              Provider.of<MetodoEnvioService>(context,
                                       listen: false)
                                   .crearMetodoEnvio(
                                       transportista.text.trim(),

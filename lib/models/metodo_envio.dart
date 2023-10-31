@@ -42,4 +42,9 @@ class MetodoEnvio {
         "created_at": createdAt,
         "updated_at": updatedAt
     };
+
+    @override
+    String toString() {
+      return 'trasportista: $transportista - metodo: $metodo - costo por kg: $costoKg';
+    }
 }

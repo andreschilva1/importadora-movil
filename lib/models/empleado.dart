@@ -8,6 +8,8 @@ List<Empleado> empleadoFromJson(String str) => List<Empleado>.from(json.decode(s
 
 String empleadoToJson(List<Empleado> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
+Empleado empleadoFromJson1(String str) => Empleado.fromJson(json.decode(str));
+
 class Empleado {
     int id;
     String name;

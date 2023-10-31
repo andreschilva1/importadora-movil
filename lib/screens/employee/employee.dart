@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:projectsw2_movil/helpers/alert.dart';
 import 'package:projectsw2_movil/models/empleado.dart';
-import 'package:projectsw2_movil/providers/employee_provider.dart';
 import 'package:projectsw2_movil/screens/employee/create_employee.dart';
+import 'package:projectsw2_movil/services/employee_service.dart';
 import 'package:projectsw2_movil/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -17,7 +17,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
   @override
   void initState() {
     super.initState();
-    Provider.of<EmployeeProvider>(context, listen: false).fetchEmployees();
+    Provider.of<EmployeeService>(context, listen: false).fetchEmployees();
   }
 
   @override
@@ -44,7 +44,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
         title: const Text('Empleados'),
       ),
       body: Center(
-        child: Consumer<EmployeeProvider>(
+        child: Consumer<EmployeeService>(
             builder: (context, employeeProvider, child) {
           if (employeeProvider.empleados!.isEmpty) {
             return const CircularProgressIndicator();

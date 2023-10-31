@@ -4,9 +4,11 @@
 
 import 'dart:convert';
 
-List<Almacen> almacenFromJson(String str) => List<Almacen>.from(json.decode(str).map((x) => Almacen.fromJson(x)));
+List<Almacen> almacenesFromJson(String str) => List<Almacen>.from(json.decode(str).map((x) => Almacen.fromJson(x)));
 
 String almacenToJson(List<Almacen> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+
+Almacen almacenFromJson(String str) => Almacen.fromJson(json.decode(str));
 
 class Almacen {
     int id;

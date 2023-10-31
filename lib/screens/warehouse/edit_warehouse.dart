@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projectsw2_movil/helpers/input_decoration.dart';
-import 'package:projectsw2_movil/providers/warehouse_provider.dart';
+import 'package:projectsw2_movil/services/services.dart';
 import 'package:projectsw2_movil/widgets/card_container.dart';
 import 'package:provider/provider.dart';
 
@@ -126,7 +126,7 @@ class CreateWarehouseScreen extends StatelessWidget {
                         onPressed: () {
                           if (formKey.currentState!.validate()) {
                             FocusScope.of(context).unfocus();
-                            Provider.of<WarehouseProvider>(context,
+                            Provider.of<WarehouseService>(context,
                                     listen: false)
                                 .crearAlmacen(name.text, direccion.text,
                                     telefono.text, pais.text, context);

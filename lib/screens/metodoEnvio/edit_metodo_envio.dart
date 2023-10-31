@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projectsw2_movil/helpers/input_decoration.dart';
-import 'package:projectsw2_movil/providers/warehouse_provider.dart';
 import 'package:projectsw2_movil/widgets/card_container.dart';
-import 'package:provider/provider.dart';
 
 class EditMetodoEnvioScreen extends StatelessWidget {
   final TextEditingController transportista;

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:projectsw2_movil/providers/employee_provider.dart';
-import 'package:projectsw2_movil/providers/metodo_envio_provider.dart';
-import 'package:projectsw2_movil/providers/warehouse_provider.dart';
 import 'package:projectsw2_movil/routes/app_routes.dart';
+import 'package:projectsw2_movil/services/envio.service.dart';
+import 'package:projectsw2_movil/services/estado_envio.service.dart';
 import 'package:projectsw2_movil/services/services.dart';
 import 'package:projectsw2_movil/theme/app_theme.dart';
 import 'package:provider/provider.dart';
@@ -19,9 +18,12 @@ class AppState extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthService()), 
-        ChangeNotifierProvider(create: (_) => WarehouseProvider()),
-        ChangeNotifierProvider(create: (_) => EmployeeProvider()),  
-        ChangeNotifierProvider(create: (_) => MetodoEnvioProvider()),  
+        ChangeNotifierProvider(create: (_) => WarehouseService()),
+        ChangeNotifierProvider(create: (_) => EmployeeService()), 
+        ChangeNotifierProvider(create: (_) => MetodoEnvioService()),   
+        ChangeNotifierProvider(create: (_) => PaqueteService()),
+        ChangeNotifierProvider(create: (_) => EnvioService()),
+        ChangeNotifierProvider(create: (_) => EstadoEnvioService()),
         ], 
       child:const MyApp(),
     );
@@ -41,7 +43,7 @@ class MyApp extends StatelessWidget {
       title: 'Your App Name',
       debugShowCheckedModeBanner: false,
       initialRoute: AppRoutes.initialRoute,
-      routes: AppRoutes.getAppRoutes(),
+      routes: AppRoutes.getAppRoutes(context),
       theme: AppTheme.lightTheme,
     );
   }
