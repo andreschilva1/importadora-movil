@@ -7,8 +7,15 @@ import 'package:projectsw2_movil/services/api_service.dart';
 
 class AuthService extends ChangeNotifier {
   static final String _baseUrl = ApiService.baseUrl;
-  static User? user;
   bool isLoading = false;
+
+  User? _user;
+  User? get user => _user;
+
+  Future<void> fetchUser() async {
+    _user = await readUser();
+    notifyListeners();
+  }
 
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
@@ -16,7 +23,6 @@ class AuthService extends ChangeNotifier {
     logout();
     isLoading = true;
     notifyListeners();
-
 
     String url = '$_baseUrl/api/login';
 
@@ -28,31 +34,28 @@ class AuthService extends ChangeNotifier {
     if (response.statusCode == 200) {
       final responseData = json.decode(response.body);
       final token = responseData['token'];
-      user = User.fromJson(response.body);
+      _user = User.fromJson(response.body);
 
       await _storage.write(key: 'token', value: token);
 
       print(token);
       await storageWrite(token, user?.id, user!.email, user!.name, user!.rol,
           user?.celular, user?.foto);
-     
-     
+
       print('success login');
-     
+
       isLoading = false;
       notifyListeners();
       return true;
-    
     } else {
       print('Failed to login');
       return false;
       //throw Exception('Failed to login');
     }
-    
   }
 
-  void register(String name, String email, String password, String celular) async {
-
+  void register(
+      String name, String email, String password, String celular) async {
     String url = '$_baseUrl/api/createClient';
 
     final response = await http.post(Uri.parse(url), body: {
@@ -67,7 +70,6 @@ class AuthService extends ChangeNotifier {
     } else {
       print('Failed to register');
     }
-    
   }
 
   Future<bool> checkAuth() async {
@@ -75,7 +77,7 @@ class AuthService extends ChangeNotifier {
     if (token == null) {
       return false;
     }
-    String  url = '$_baseUrl/api/user';
+    String url = '$_baseUrl/api/user';
     final response = await http.get(Uri.parse(url), headers: {
       'Authorization': 'Bearer $token',
     });
@@ -90,20 +92,19 @@ class AuthService extends ChangeNotifier {
   Future<void> logout() async {
     final token = await _storage.read(key: 'token');
     if (token != null) {
-      String  url = '$_baseUrl/api/logout';
-      final response = await http.get(Uri.parse(url),headers: {
+      String url = '$_baseUrl/api/logout';
+      final response = await http.get(Uri.parse(url), headers: {
         'Authorization': 'Bearer $token',
       });
-
     }
 
     await _storage.deleteAll();
   }
 
-  Future storageWrite(String idToken , int? id , String email, String name,
+  Future storageWrite(String idToken, int? id, String email, String name,
       String rol, String? celular, String? foto) async {
     await _storage.write(key: 'token', value: idToken);
-    await _storage.write(key: 'id', value: id.toString() );
+    await _storage.write(key: 'id', value: id.toString());
     await _storage.write(key: 'name', value: name);
     await _storage.write(key: 'email', value: email);
     await _storage.write(key: 'rol', value: rol);
@@ -118,6 +119,8 @@ class AuthService extends ChangeNotifier {
     final rol = await _storage.read(key: 'rol');
     final celular = await _storage.read(key: 'celular');
     final foto = await _storage.read(key: 'foto');
+
+    fetchUser();
 
     return User(
       id: int.tryParse(id ?? ''),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:projectsw2_movil/providers/employee_provider.dart';
-import 'package:projectsw2_movil/providers/warehouse_provider.dart';
+import 'package:projectsw2_movil/services/employee_service.dart';
+import 'package:projectsw2_movil/services/metodo_envio_service.dart';
+import 'package:projectsw2_movil/services/warehouse_service.dart';
 import 'package:provider/provider.dart';
 
 mostrarLoading(BuildContext context, {String? mensaje}) {
@@ -43,16 +44,18 @@ showAlertDialog(BuildContext context, String text, int id) async {
     onPressed: () {
       FocusScope.of(context).unfocus();
       if(text == "Almacen"){
-        Provider.of<WarehouseProvider>(context, listen: false).eliminar(context, id);
-      }else{
-        Provider.of<EmployeeProvider>(context, listen: false).eliminar(context, id);
+        Provider.of<WarehouseService>(context, listen: false).eliminar(context, id);
+      }else if (text == "Método de Envío"){
+        Provider.of<MetodoEnvioService>(context, listen: false).eliminar(context, id);
+      }else{ 
+        Provider.of<EmployeeService>(context, listen: false).eliminar(context, id);
       }
     },
   );
 
   // set up the AlertDialog
   AlertDialog alert = AlertDialog(
-    title: const Text("Eliminar Campo"),
+    title: const Text("Eliminar campo"),
     content: const Text("Está de acuerdo en eliminar este información?"),
     actions: [
       cancelButton,

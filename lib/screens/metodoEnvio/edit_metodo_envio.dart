@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:projectsw2_movil/helpers/input_decoration.dart';
-import 'package:projectsw2_movil/services/services.dart';
 import 'package:projectsw2_movil/widgets/card_container.dart';
-import 'package:provider/provider.dart';
 
-class CreateWarehouseScreen extends StatelessWidget {
-  final TextEditingController name;
-  final TextEditingController direccion;
-  final TextEditingController telefono;
-  final TextEditingController pais;
-  const CreateWarehouseScreen({super.key, required this.name, required this.direccion, required this.telefono, required this.pais});
+class EditMetodoEnvioScreen extends StatelessWidget {
+  final TextEditingController transportista;
+  final TextEditingController metodo;
+  final TextEditingController costoKg;
+  const EditMetodoEnvioScreen({super.key, required this.transportista, required this.metodo, required this.costoKg});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +25,7 @@ class CreateWarehouseScreen extends StatelessWidget {
           },
         ),
         centerTitle: true,
-        title: const Text('Creando Almacén'),
+        title: const Text('Editando Método de Envío'),
       ),
       body: Form(
         key: formKey,
@@ -54,7 +51,7 @@ class CreateWarehouseScreen extends StatelessWidget {
                       }
                       return null;
                     },
-                    controller: name,
+                    controller: transportista,
                   ),
                   const SizedBox(height: 30),
                   TextFormField(
@@ -72,7 +69,7 @@ class CreateWarehouseScreen extends StatelessWidget {
                       }
                       return null;
                     },
-                    controller: direccion,
+                    controller: metodo,
                   ),
                   const SizedBox(height: 30),
                   TextFormField(
@@ -83,31 +80,13 @@ class CreateWarehouseScreen extends StatelessWidget {
                       labelText: 'Teléfono del almacén',
                       prefixIcon: Icons.phone,
                     ),
-                    controller: telefono,
+                    controller: costoKg,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Ingrese el teléfono';
                       }
                       return null;
                     },
-                  ),
-                  const SizedBox(height: 30),
-                  TextFormField(
-                    autocorrect: false,
-                    keyboardType: TextInputType.streetAddress,
-                    decoration: InputDecorations.authInputDecoration(
-                      hintText: 'País',
-                      labelText: 'País del almacén',
-                      prefixIcon: Icons.flag,
-                    ),
-                    onChanged: (value) => value,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Ingrese el país';
-                      }
-                      return null;
-                    },
-                    controller: pais,
                   ),
                   const SizedBox(height: 30),
                   Container(
@@ -126,10 +105,10 @@ class CreateWarehouseScreen extends StatelessWidget {
                         onPressed: () {
                           if (formKey.currentState!.validate()) {
                             FocusScope.of(context).unfocus();
-                            Provider.of<WarehouseService>(context,
-                                    listen: false)
-                                .crearAlmacen(name.text, direccion.text,
-                                    telefono.text, pais.text, context);
+                            // Provider.of<WarehouseProvider>(context,
+                            //         listen: false)
+                            //     .crearAlmacen(name.text, direccion.text,
+                            //         telefono.text, pais.text, context);
                           }
                         }),
                   ),

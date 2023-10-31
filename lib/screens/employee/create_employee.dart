@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:projectsw2_movil/helpers/input_decoration.dart';
+import 'package:projectsw2_movil/services/employee_service.dart';
 import 'package:projectsw2_movil/widgets/card_container.dart';
 import 'package:provider/provider.dart';
-import 'package:projectsw2_movil/providers/employee_provider.dart';
 
 class CreateEmployeeScreen extends StatelessWidget {
   const CreateEmployeeScreen({super.key});
@@ -129,7 +129,7 @@ class CreateEmployeeScreen extends StatelessWidget {
                           onPressed: () {
                             if (formKey.currentState!.validate()) {
                               FocusScope.of(context).unfocus();
-                              Provider.of<EmployeeProvider>(context,
+                              Provider.of<EmployeeService>(context,
                                       listen: false)
                                   .crearEmpleado(name.text, email.text,
                                       password.text, celular.text, context);

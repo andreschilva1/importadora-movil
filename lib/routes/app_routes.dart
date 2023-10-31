@@ -1,21 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:projectsw2_movil/models/models.dart';
 import 'package:projectsw2_movil/screens/employee/employee.dart';
+import 'package:projectsw2_movil/screens/metodoEnvio/metodo_envio_screen.dart';
+import 'package:projectsw2_movil/screens/paquete/paquete.dart';
 import 'package:projectsw2_movil/screens/screens.dart';
 
 class AppRoutes {
   static const initialRoute = 'checkAuth';
 
-  static final routes = <Ruta>[
-    Ruta(name: 'Home', icon: Icons.home, route: 'home', screen: const HomeScreen()),
-    Ruta(name: 'Perfil', icon: Icons.person, route: 'perfil', screen: const PerfilScreen()),
-    Ruta(name: 'Almacén', icon: Icons.warehouse_rounded, route: 'warehouse', screen: const WarehouseScreen()),
-    Ruta(name: 'Empleados', icon: Icons.person_2_outlined, route: 'empleado', screen: const EmployeeScreen()),
-    Ruta(name: 'Registrar Paquetes', icon: Icons.add_box_outlined, route: 'resgistrarPaquete', screen: const CreatePaqueteScreen()),
-    
+  static final routes = <RouteDefinition>[
+    const RouteDefinition('Home', Icons.home, 'home', HomeScreen()),
+    const RouteDefinition('Almacén', Icons.warehouse_rounded, 'warehouse', WarehouseScreen()),
+    const RouteDefinition('Empleados', Icons.person_2_outlined, 'empleado', EmployeeScreen()),
+    const RouteDefinition('MetodoEnvio', Icons.local_shipping_outlined, 'metodoEnvio', MetodoEnvioScreen()),
+    const RouteDefinition('Paquete', Icons.add_box_outlined, 'paquete', PaqueteScreen()),
+    const RouteDefinition('Registrar Paquetes', Icons.add_box_outlined, 'resgistrarPaquete', CreatePaqueteScreen()),
   ];
 
-  static Map<String, Widget Function(BuildContext)> getAppRoutes() {
+  static final routesCliente = <RouteDefinition>[
+    const RouteDefinition('Home', Icons.home, 'home', HomeScreen()),
+    const RouteDefinition('MetodoEnvio', Icons.local_shipping_outlined, 'metodoEnvio', MetodoEnvioScreen()),
+    const RouteDefinition('Paquete', Icons.add_box_outlined, 'paquete', PaqueteScreen()),
+  ];
+
+  static Map<String, Widget Function(BuildContext)> getAppRoutes(BuildContext context){
     Map<String, Widget Function(BuildContext)> appRoutes = {};
     appRoutes.addAll({'checkAuth': (context) => const CheckAuthScreen()});
     appRoutes.addAll({'login': (context) => const LoginScreen()});
@@ -24,4 +31,13 @@ class AppRoutes {
     }
     return appRoutes;
   }
+}
+
+class RouteDefinition {
+  final String name;
+  final IconData icon;
+  final String route;
+  final Widget screen;
+
+  const RouteDefinition(this.name, this.icon, this.route, this.screen);
 }

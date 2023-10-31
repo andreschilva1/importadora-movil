@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:projectsw2_movil/services/services.dart';
+import 'package:projectsw2_movil/services/metodo_envio_service.dart';
 import 'package:projectsw2_movil/widgets/card_container.dart';
 import 'package:projectsw2_movil/widgets/text_form_customer.dart';
 import 'package:provider/provider.dart';
 
-class CreateWarehouseScreen extends StatelessWidget {
-  const CreateWarehouseScreen({super.key});
+class CreateMetodoEnvioScreen extends StatelessWidget {
+  const CreateMetodoEnvioScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final formKey = GlobalKey<FormState>();
-    TextEditingController name = TextEditingController();
-    TextEditingController direccion = TextEditingController();
-    TextEditingController telefono = TextEditingController();
-    TextEditingController pais = TextEditingController();
+    TextEditingController transportista = TextEditingController();
+    TextEditingController metodo = TextEditingController();
+    TextEditingController costoKg = TextEditingController();
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -28,7 +27,7 @@ class CreateWarehouseScreen extends StatelessWidget {
           },
         ),
         centerTitle: true,
-        title: const Text('Creando Almacén'),
+        title: const Text('Creando Método de Envío'),
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -42,39 +41,30 @@ class CreateWarehouseScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     TextFormCustomer(
-                      controller: name, 
+                      controller: transportista, 
                       type: TextInputType.name, 
-                      icon: Icons.text_fields, 
-                      hintText: 'Nombre', 
-                      labelText: 'Nombre del almacén', 
-                      aviso: 'Ingrese el nombre',
+                      icon: Icons.business_outlined, 
+                      hintText: 'Transpostista', 
+                      labelText: 'Transpostista del método de envío', 
+                      aviso: 'Ingrese el transportista del método',
                     ),
                     const SizedBox(height: 30),
                     TextFormCustomer(
-                      controller: direccion, 
+                      controller: metodo, 
                       type: TextInputType.name, 
-                      icon: Icons.directions, 
-                      hintText: 'Dirección', 
-                      labelText: 'Dirección del almacén', 
-                      aviso: 'Ingrese la dirección',
+                      icon: Icons.airplane_ticket_outlined, 
+                      hintText: 'Método', 
+                      labelText: 'Método del envío', 
+                      aviso: 'Ingrese el método',
                     ),
                     const SizedBox(height: 30),
                     TextFormCustomer(
-                      controller: telefono, 
+                      controller: costoKg, 
                       type: TextInputType.number, 
-                      icon: Icons.phone, 
-                      hintText: 'Teléfono', 
-                      labelText: 'Teléfono del almacén', 
-                      aviso: 'Ingrese el teléfono',
-                    ),
-                    const SizedBox(height: 30),
-                    TextFormCustomer(
-                      controller: pais, 
-                      type: TextInputType.streetAddress, 
-                      icon: Icons.flag, 
-                      hintText: 'País', 
-                      labelText: 'País del almacén', 
-                      aviso: 'Ingrese el país',
+                      icon: Icons.money_outlined, 
+                      hintText: 'Costo por Kg', 
+                      labelText: 'Costo por Kg del método de envío', 
+                      aviso: 'Ingrese el costo por Kg',
                     ),
                     const SizedBox(height: 30),
                     Container(
@@ -93,12 +83,13 @@ class CreateWarehouseScreen extends StatelessWidget {
                           onPressed: () {
                             if (formKey.currentState!.validate()) {
                               FocusScope.of(context).unfocus();
-                              Provider.of<WarehouseService>(context, listen: false).crearAlmacen(
-                                name.text.trim(),
-                                direccion.text.trim(),
-                                telefono.text.trim(),
-                                pais.text.trim(),
-                                context);
+                              Provider.of<MetodoEnvioService>(context,
+                                      listen: false)
+                                  .crearMetodoEnvio(
+                                      transportista.text.trim(),
+                                      metodo.text.trim(),
+                                      costoKg.text.trim(),
+                                      context);
                             }
                           }),
                     ),

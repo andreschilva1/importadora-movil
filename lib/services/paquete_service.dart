@@ -4,13 +4,43 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:projectsw2_movil/helpers/alert.dart';
+import 'package:projectsw2_movil/models/paquete.dart';
 import 'package:projectsw2_movil/services/api_service.dart';
+import 'package:projectsw2_movil/services/server_service.dart';
 
 class PaqueteService extends ChangeNotifier {
+  List<Paquete>? _paquetes = [];
+
+  List<Paquete>? get paquetes => _paquetes;
+
   ApiService apiService = ApiService();
   static final String _baseUrl = ApiService.baseUrl;
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
   bool isLoading = false;
+
+  Future<void> fetchPaquetes() async {
+    _paquetes = await getPaquetes();
+    notifyListeners();
+  }
+
+  Future<List<Paquete>> getPaquetes() async {
+    final urlPrincipal = ServerService().url;
+    final token = await _storage.read(key: 'token');
+    final url = Uri.parse('$urlPrincipal/api/obtenerPaquetes');
+    final response = await http.get(url, headers: {
+      'Authorization': 'Bearer $token',
+    });
+
+    if (200 == response.statusCode) {
+      final respuesta = jsonDecode(response.body);
+      final List<Paquete> paquetes =
+          paqueteFromJson(jsonEncode(respuesta['data']));
+      print(paquetes);
+      return paquetes;
+    } else {
+      return List.empty();
+    }
+  }
 
   Future obtenerDatosDeImagen(
       {required File imageFile, required BuildContext context}) async {
@@ -73,12 +103,12 @@ class PaqueteService extends ChangeNotifier {
   }
 
   Future<bool> createPaquete({
-    required  photoPath,
-    required  codigoRastreo,
-    required  peso,
-    required  clienteId,
-    required  almacenId,
-    required  empleadoId,
+    required photoPath,
+    required codigoRastreo,
+    required peso,
+    required clienteId,
+    required almacenId,
+    required empleadoId,
   }) async {
     try {
       isLoading = true;
@@ -93,6 +123,7 @@ class PaqueteService extends ChangeNotifier {
         'empleado_id': empleadoId,
       });
       if (response.statusCode == 200) {
+        fetchPaquetes();
         print(response.body);
         return true;
       } else {
@@ -102,7 +133,7 @@ class PaqueteService extends ChangeNotifier {
     } catch (e) {
       print('Error en la solicitud: $e');
       return false;
-    }finally{
+    } finally {
       isLoading = false;
       notifyListeners();
     }

@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:projectsw2_movil/helpers/alert.dart';
-import 'package:projectsw2_movil/models/empleado.dart';
-import 'package:projectsw2_movil/screens/employee/create_employee.dart';
-import 'package:projectsw2_movil/services/employee_service.dart';
+import 'package:projectsw2_movil/models/metodo_envio.dart';
+import 'package:projectsw2_movil/screens/metodoEnvio/create_metodo_envio.dart';
+import 'package:projectsw2_movil/services/metodo_envio_service.dart';
 import 'package:projectsw2_movil/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
-class EmployeeScreen extends StatefulWidget {
-  const EmployeeScreen({Key? key}) : super(key: key);
+class MetodoEnvioScreen extends StatefulWidget {
+  const MetodoEnvioScreen({Key? key}) : super(key: key);
 
   @override
-  State<EmployeeScreen> createState() => _EmployeeScreenState();
+  State<MetodoEnvioScreen> createState() => _MetodoEnvioScreenState();
 }
 
-class _EmployeeScreenState extends State<EmployeeScreen> {
+class _MetodoEnvioScreenState extends State<MetodoEnvioScreen> {
   @override
   void initState() {
     super.initState();
-    Provider.of<EmployeeService>(context, listen: false).fetchEmployees();
+    Provider.of<MetodoEnvioService>(context, listen: false).fetchMetodoEnvios();
   }
 
   @override
@@ -34,27 +34,24 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                    builder: (context) => const CreateEmployeeScreen()),
+                MaterialPageRoute(builder: (context) => const CreateMetodoEnvioScreen()),
               );
             },
           ),
         ],
-        centerTitle: true,
-        title: const Text('Empleados'),
+        title: const Text('Métodos de Envio'),
       ),
       body: Center(
-        child: Consumer<EmployeeService>(
-            builder: (context, employeeProvider, child) {
-          if (employeeProvider.empleados!.isEmpty) {
+        child: Consumer<MetodoEnvioService>(builder: (context, metodoEnvioProvider, child) {
+          if (metodoEnvioProvider.metodoEnvios!.isEmpty) {
             return const CircularProgressIndicator();
           }
           return SizedBox(
             height: MediaQuery.of(context).size.height * .9,
             child: ListView.builder(
-              itemCount:employeeProvider.empleados!.length,
+              itemCount: metodoEnvioProvider.metodoEnvios!.length,
               itemBuilder: (ctx, index) {
-                Empleado empleado = employeeProvider.empleados![index];
+                MetodoEnvio metodoEnvio = metodoEnvioProvider.metodoEnvios![index];
                 return Stack(
                   children: <Widget>[
                     Container(
@@ -64,7 +61,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                               end: Alignment.bottomLeft,
                               colors: [
                             Colors.white,
-                            const Color.fromARGB(255, 0, 0, 0).withOpacity(0.5)
+                            const Color.fromARGB(255, 0, 0, 0).withOpacity(0.3)
                           ])),
                       width: MediaQuery.of(context).size.width,
                       child: Card(
@@ -80,8 +77,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                 decoration: BoxDecoration(
                                   boxShadow: [
                                     BoxShadow(
-                                      color: const Color.fromARGB(
-                                              255, 133, 119, 119)
+                                      color: const Color.fromARGB(255, 133, 119, 119)
                                           .withOpacity(0.3),
                                       spreadRadius: 1.2,
                                       blurRadius: 7,
@@ -89,15 +85,9 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                   ],
                                 ),
                                 child: const Icon(
-                                  Icons.person_3_rounded,
+                                  Icons.local_shipping_outlined,
                                   color: Color.fromARGB(255, 0, 73, 175),
                                 ),
-                                // child: Image.network(
-                                //   empleado.profilePhotoUrl,
-                                //   width: 50,
-                                //   height: 50,
-                                //   fit: BoxFit.cover,
-                                // ),
                               ),
                             ),
                             Column(
@@ -110,9 +100,9 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                   width:
                                       MediaQuery.of(context).size.width * 0.42,
                                   child: Text(
-                                    empleado.name,
+                                    "Transportista: ${metodoEnvio.transportista}",
                                     style: const TextStyle(
-                                      fontSize: 18,
+                                      fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -121,11 +111,9 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                   width:
                                       MediaQuery.of(context).size.width * 0.42,
                                   child: Text(
-                                    "Email: ${empleado.email}",
+                                    "Método: ${metodoEnvio.metodo}",
                                     style: const TextStyle(
                                       color: Colors.grey,
-                                      fontSize: 15.0,
-                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),
@@ -133,11 +121,9 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                   width:
                                       MediaQuery.of(context).size.width * 0.42,
                                   child: Text(
-                                    "Teléfono: ${empleado.celular}",
+                                    "Costo por Kg: ${metodoEnvio.costoKg} bs",
                                     style: const TextStyle(
                                       color: Colors.grey,
-                                      fontSize: 15.0,
-                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),
@@ -150,39 +136,32 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Padding(
-                                  padding:
-                                      const EdgeInsets.only(left: 10, right: 5),
+                                  padding: const EdgeInsets.only(left: 10, right: 5),
                                   child: Row(
                                     children: <Widget>[
                                       ElevatedButton.icon(
                                           onPressed: () {
-                                            showAlertDialog(
-                                                context, "Empleado", empleado.id);
+                                            showAlertDialog(context, "Método de Envío", metodoEnvio.id);
                                           },
                                           label: const Text('Eliminar'),
                                           icon: const Icon(Icons.delete),
                                           style: ElevatedButton.styleFrom(
-                                              backgroundColor:
-                                                  Colors.red[700])),
+                                              backgroundColor: Colors.red[700])),
                                     ],
                                   ),
                                 ),
                                 Padding(
-                                  padding:
-                                      const EdgeInsets.only(left: 10, right: 5),
+                                  padding: const EdgeInsets.only(left: 10, right: 5),
                                   child: Row(
                                     children: <Widget>[
                                       ElevatedButton.icon(
                                           onPressed: () {
-                                            showAlertDialog(
-                                                context, "Empleado", empleado.id);
+                                            showAlertDialog(context, "Método de Envío", metodoEnvio.id);
                                           },
                                           label: const Text('Editar'),
                                           icon: const Icon(Icons.edit),
                                           style: ElevatedButton.styleFrom(
-                                              backgroundColor:
-                                                  const Color.fromARGB(
-                                                      255, 0, 76, 255))),
+                                              backgroundColor: const Color.fromARGB(255, 0, 76, 255))),
                                     ],
                                   ),
                                 ),
@@ -202,3 +181,4 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
     );
   }
 }
+

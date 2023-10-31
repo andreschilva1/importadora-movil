@@ -4,9 +4,9 @@ import 'package:http/http.dart' as http;
 import 'package:projectsw2_movil/helpers/alert.dart';
 import 'dart:convert';
 import 'package:projectsw2_movil/models/almacen.dart';
-import 'package:projectsw2_movil/providers/server_provider.dart';
+import 'package:projectsw2_movil/services/server_service.dart';
 
-class WarehouseProvider extends ChangeNotifier {
+class WarehouseService extends ChangeNotifier {
   List<Almacen>? _almacenes = [];
 
   List<Almacen>? get almacenes => _almacenes;
@@ -19,7 +19,7 @@ class WarehouseProvider extends ChangeNotifier {
   }
 
   Future<List<Almacen>> getAlmacenes() async {
-    final urlPrincipal = ServerProvider().url;
+    final urlPrincipal = ServerService().url;
     final token = await _storage.read(key: 'token');
     final url = Uri.parse('$urlPrincipal/api/obtenerAlmacenes');
     final response = await http.get(url, headers: {
@@ -29,18 +29,40 @@ class WarehouseProvider extends ChangeNotifier {
     if (200 == response.statusCode) {
       final respuesta = jsonDecode(response.body);
       final List<Almacen> almacenes =
-          almacenFromJson(jsonEncode(respuesta['data']));
+          almacenesFromJson(jsonEncode(respuesta['data']));
       return almacenes;
     } else {
       return List.empty();
     }
   }
 
-  void crearAlmacen(String name, String direccion, String telefono, String pais,
+  Future<Almacen?> getAlmacen(int id) async {
+    final urlPrincipal = ServerService().url;
+    final token = await _storage.read(key: 'token');
+    final url = Uri.parse('$urlPrincipal/api/editAlmacen');
+    final response = await http.patch(url, headers: {
+      "Content-Type": "application/json",
+      'Authorization': 'Bearer $token',
+    },
+    body: jsonEncode({
+        'id': id,
+      }),
+    );
+
+    if (200 == response.statusCode) {
+      final respuesta = jsonDecode(response.body);
+      final Almacen almacen = almacenFromJson(jsonEncode(respuesta['data']));
+      return almacen;
+    } else {
+      return null;
+    }
+  }
+
+  Future<void> crearAlmacen(String name, String direccion, String telefono, String pais,
       BuildContext context) async {
     mostrarLoading(context);
     final token = await _storage.read(key: 'token');
-    final url = ServerProvider().url;
+    final url = ServerService().url;
 
     final response = await http.post(
       Uri.parse('$url/api/crearAlmacen'),
@@ -67,10 +89,10 @@ class WarehouseProvider extends ChangeNotifier {
     }
   }
 
-  eliminar(BuildContext context, int id) async {
+  Future<void> eliminar(BuildContext context, int id) async {
     mostrarLoading(context);
     final token = await _storage.read(key: 'token');
-    final url = ServerProvider().url;
+    final url = ServerService().url;
     final response = await http.delete(Uri.parse('$url/api/eliminarAlmacen'),
         headers: {
           "Content-Type": "application/json",
