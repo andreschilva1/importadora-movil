@@ -30,10 +30,43 @@ class EnvioService extends ChangeNotifier {
 
     if (200 == response.statusCode) {
       final respuesta = jsonDecode(response.body);
-      final Envio envio = envioFromJson(jsonEncode(respuesta['data']));
-      return envio;
+      
+      if (respuesta['data'] != null) {
+        final Envio envio = envioFromJson(jsonEncode(respuesta['data']));
+        return envio;
+      } else {
+        return null;
+      }
     } else {
       return null;
+    }
+  }
+
+  Future<void> createEnvio(int id, int metodo, BuildContext context) async {
+    mostrarLoading(context);
+    final token = await _storage.read(key: 'token');
+    final url = ServerService().url;
+
+    final response = await http.post(
+      Uri.parse('$url/api/createEnvio'),
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({
+        'paquete_id': id,
+        'metodo_envio_id': metodo,
+      }),
+    );
+
+    final respuesta = jsonDecode(response.body);
+    if (200 == response.statusCode) {
+      notifyListeners();
+      Navigator.pop(context);
+    } else {
+      Navigator.pop(context);
+      final mensajeErroneo = jsonEncode(respuesta['mensaje']);
+      mostrarAlerta(context, 'Error', mensajeErroneo);
     }
   }
 

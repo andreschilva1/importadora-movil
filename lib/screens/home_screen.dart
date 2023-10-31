@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projectsw2_movil/models/models.dart';
-import 'package:projectsw2_movil/screens/edit_profile.dart';
+import 'package:projectsw2_movil/screens/edit_profile_screen.dart';
 import 'package:projectsw2_movil/services/services.dart';
 import 'package:projectsw2_movil/widgets/widgets.dart';
 import 'package:provider/provider.dart';

@@ -1,53 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:projectsw2_movil/models/envio.dart';
+import 'package:projectsw2_movil/screens/envio/create_envio_screen.dart';
 import 'package:projectsw2_movil/screens/envio/edit_envio_screen.dart';
-import 'package:projectsw2_movil/services/envio.service.dart';
-import 'package:projectsw2_movil/services/services.dart';
+import 'package:projectsw2_movil/services/auth_services.dart';
+import 'package:projectsw2_movil/services/envio_service.dart';
 import 'package:projectsw2_movil/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
-class EnvioScreen extends StatefulWidget {
+class EnvioScreen extends StatelessWidget {
   final int paquete;
-  const EnvioScreen({Key? key, required this.paquete}) : super(key: key);
+  final String peso;
 
-  @override
-  State<EnvioScreen> createState() => _EnvioScreenState();
-}
-
-class _EnvioScreenState extends State<EnvioScreen> {
-  @override
-  void initState() {
-    super.initState();
-  }
+  const EnvioScreen({Key? key, required this.paquete, required this.peso})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context, listen: false).user!;
     return Scaffold(
       drawer: const SidebarDrawer(),
       appBar: AppBar(
-        // actions: user!.rol == "Cliente"
-        //     ? []
-        //     : [
-        //         IconButton(
-        //           icon: const Icon(
-        //             Icons.edit_note_outlined,
-        //             color: Colors.white,
-        //           ),
-        //           onPressed: () {
-        //             Navigator.push(
-        //               context,
-        //               MaterialPageRoute(
-        //                   builder: (context) => const EditProfile()),
-        //             );
-        //           },
-        //         ),
-        //       ],
         centerTitle: true,
         title: const Text('Envío'),
       ),
       body: Center(
         child: FutureBuilder<Envio?>(
-          future: Provider.of<EnvioService>(context).getEnvio(widget.paquete),
+          future: Provider.of<EnvioService>(context).getEnvio(paquete),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return Stack(
@@ -81,7 +59,7 @@ class _EnvioScreenState extends State<EnvioScreen> {
                       child: Container(
                           padding: const EdgeInsets.all(10.0),
                           width: MediaQuery.of(context).size.width * .85,
-                          height: 460,
+                          height: authService.rol != "Cliente" ? 460 : 400,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -97,19 +75,19 @@ class _EnvioScreenState extends State<EnvioScreen> {
                               ),
                               RowCustom(
                                 icon: Icons.source,
-                                color: Colors.blueAccent[400]!, 
-                                text: "Código de Rastreo", 
+                                color: Colors.blueAccent[400]!,
+                                text: "Código de Rastreo",
                                 subText: snapshot.data!.codigoRastreo == null
-                                  ? "No registrado"
-                                  : snapshot.data!.codigoRastreo!,
+                                    ? "No registrado"
+                                    : snapshot.data!.codigoRastreo!,
                               ),
                               const SizedBox(
                                 height: 20.0,
                               ),
                               RowCustom(
                                 icon: Icons.money_off,
-                                color: Colors.yellowAccent[400]!, 
-                                text: "Costo", 
+                                color: Colors.yellowAccent[400]!,
+                                text: "Costo",
                                 subText: snapshot.data!.costo,
                               ),
                               const SizedBox(
@@ -117,8 +95,8 @@ class _EnvioScreenState extends State<EnvioScreen> {
                               ),
                               RowCustom(
                                 icon: Icons.local_shipping,
-                                color: Colors.pinkAccent[400]!, 
-                                text: "Transportista", 
+                                color: Colors.pinkAccent[400]!,
+                                text: "Transportista",
                                 subText: snapshot.data!.transportista,
                               ),
                               const SizedBox(
@@ -126,8 +104,8 @@ class _EnvioScreenState extends State<EnvioScreen> {
                               ),
                               RowCustom(
                                 icon: Icons.airplane_ticket,
-                                color: Colors.black, 
-                                text: "Método del transportista", 
+                                color: Colors.black,
+                                text: "Método del transportista",
                                 subText: snapshot.data!.metodo,
                               ),
                               const SizedBox(
@@ -135,8 +113,8 @@ class _EnvioScreenState extends State<EnvioScreen> {
                               ),
                               RowCustom(
                                 icon: Icons.sell,
-                                color: Colors.lightBlue, 
-                                text: "Costo por Kg del transportista", 
+                                color: Colors.lightBlue,
+                                text: "Costo por Kg del transportista",
                                 subText: snapshot.data!.costoKg,
                               ),
                               const SizedBox(
@@ -144,34 +122,58 @@ class _EnvioScreenState extends State<EnvioScreen> {
                               ),
                               RowCustom(
                                 icon: Icons.business,
-                                color: Colors.green, 
-                                text: "Estado del Envío", 
+                                color: Colors.green,
+                                text: "Estado del Envío",
                                 subText: snapshot.data!.name,
                               ),
                               const SizedBox(
                                 height: 20.0,
                               ),
-                              TextButton(
-                                onPressed: (){
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => EditEnvioScreen(envio: snapshot.data!.id, codigo: snapshot.data!.codigoRastreo, metodo: snapshot.data!.envioEstadoId,
-                                        )),
-                                  );
-                                }, 
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 70, vertical: 10),
-                                  child: const Text('Actualizar',
-                                      style: TextStyle(color: Colors.white)))
-                              )
+                              authService.rol != "Cliente"
+                                  ? TextButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  EditEnvioScreen(
+                                                    envio: snapshot.data!.id,
+                                                    codigo: snapshot
+                                                        .data!.codigoRastreo,
+                                                    metodo: snapshot
+                                                        .data!.envioEstadoId,
+                                                  )),
+                                        );
+                                      },
+                                      child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 70, vertical: 10),
+                                          child: const Text('Actualizar',
+                                              style: TextStyle(
+                                                  color: Colors.white))))
+                                  : const SizedBox(),
                             ],
                           ))),
                 ],
               );
-            } else {
+            } else if (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator();
+            } else {
+              if (authService.rol == "Cliente") {
+                return CreateEnvioScreen(peso: peso, paquete: paquete);
+              }else{
+                return Column(
+                  children: [
+                    CustomNotification(
+                      title: "Error de Acceso",
+                      message: "Su rol no le permite crear envíos.",
+                      onPressed: () {
+                        Navigator.of(context).pop(); // Cierra el aviso
+                      },
+                    ),
+                  ],
+                );
+              }
             }
           },
         ),
@@ -186,13 +188,12 @@ class RowCustom extends StatelessWidget {
   final String text;
   final String subText;
 
-  const RowCustom({
-    super.key,
-    required this.icon,
-    required this.color,
-    required this.text,
-    required this.subText
-  });
+  const RowCustom(
+      {super.key,
+      required this.icon,
+      required this.color,
+      required this.text,
+      required this.subText});
 
   @override
   Widget build(BuildContext context) {
@@ -226,6 +227,61 @@ class RowCustom extends StatelessWidget {
           ],
         )
       ],
+    );
+  }
+}
+
+class CustomNotification extends StatelessWidget {
+  final String title;
+  final String message;
+  final void Function() onPressed;
+
+  const CustomNotification({super.key, 
+    required this.title,
+    required this.message,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.red, // Puedes personalizar el color de fondo
+      padding: const EdgeInsets.all(16.0),
+      child: Row(
+        children: <Widget>[
+          const Icon(
+            Icons.error,
+            color: Colors.white,
+          ),
+          const SizedBox(width: 10),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                title,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                message,
+                style: const TextStyle(color: Colors.white),
+              ),
+            ],
+          ),
+          const Spacer(), // Espacio para alinear el botón a la derecha
+          TextButton(
+            onPressed: onPressed,
+            child: const Text(
+              "Cerrar",
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

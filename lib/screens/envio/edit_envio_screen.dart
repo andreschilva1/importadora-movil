@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projectsw2_movil/helpers/input_decoration.dart';
 import 'package:projectsw2_movil/models/estado_envio.dart';
-import 'package:projectsw2_movil/services/envio.service.dart';
+import 'package:projectsw2_movil/services/envio_service.dart';
 import 'package:projectsw2_movil/services/estado_envio.service.dart';
 import 'package:projectsw2_movil/widgets/card_container.dart';
 import 'package:provider/provider.dart';
