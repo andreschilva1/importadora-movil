@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:projectsw2_movil/models/paquete.dart';
-import 'package:projectsw2_movil/screens/envio/envio.dart';
+import 'package:projectsw2_movil/screens/envio/envio_screen.dart';
 import 'package:projectsw2_movil/screens/paquete/create_paquete_screen.dart';
-import 'package:projectsw2_movil/screens/paquete/show_almacen.dart';
-import 'package:projectsw2_movil/screens/paquete/show_cliente.dart';
-import 'package:projectsw2_movil/screens/paquete/show_empleado.dart';
-import 'package:projectsw2_movil/services/envio.service.dart';
+import 'package:projectsw2_movil/screens/paquete/show_almacen_screen.dart';
+import 'package:projectsw2_movil/screens/paquete/show_cliente_screen.dart';
+import 'package:projectsw2_movil/screens/paquete/show_empleado_screen.dart';
 import 'package:projectsw2_movil/services/services.dart';
 import 'package:projectsw2_movil/widgets/widgets.dart';
 import 'package:provider/provider.dart';
@@ -163,7 +162,7 @@ class _PaqueteScreenState extends State<PaqueteScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => EnvioScreen(paquete: paquete.id)),
+                                  builder: (context) => EnvioScreen(paquete: paquete.id, peso: paquete.peso)),
                             );
                           }
                         ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:projectsw2_movil/screens/employee/employee.dart';
+import 'package:projectsw2_movil/screens/employee/employee_screen.dart';
 import 'package:projectsw2_movil/screens/metodoEnvio/metodo_envio_screen.dart';
-import 'package:projectsw2_movil/screens/paquete/paquete.dart';
+import 'package:projectsw2_movil/screens/paquete/paquete_screen.dart';
 import 'package:projectsw2_movil/screens/screens.dart';
 
 class AppRoutes {
@@ -13,12 +13,10 @@ class AppRoutes {
     const RouteDefinition('Empleados', Icons.person_2_outlined, 'empleado', EmployeeScreen()),
     const RouteDefinition('MetodoEnvio', Icons.local_shipping_outlined, 'metodoEnvio', MetodoEnvioScreen()),
     const RouteDefinition('Paquete', Icons.add_box_outlined, 'paquete', PaqueteScreen()),
-    const RouteDefinition('Registrar Paquetes', Icons.add_box_outlined, 'resgistrarPaquete', CreatePaqueteScreen()),
   ];
 
   static final routesCliente = <RouteDefinition>[
     const RouteDefinition('Home', Icons.home, 'home', HomeScreen()),
-    const RouteDefinition('MetodoEnvio', Icons.local_shipping_outlined, 'metodoEnvio', MetodoEnvioScreen()),
     const RouteDefinition('Paquete', Icons.add_box_outlined, 'paquete', PaqueteScreen()),
   ];
 

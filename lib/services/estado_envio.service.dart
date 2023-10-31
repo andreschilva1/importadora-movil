@@ -29,7 +29,6 @@ class EstadoEnvioService extends ChangeNotifier {
       final respuesta = jsonDecode(response.body);
       final List<EstadoEnvio> estadoEnvios =
           estadoEnvioFromJson(jsonEncode(respuesta['data']));
-      print(estadoEnvios);
       return estadoEnvios;
     } else {
       return List.empty();

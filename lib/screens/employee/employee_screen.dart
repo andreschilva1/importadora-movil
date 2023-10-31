@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projectsw2_movil/helpers/alert.dart';
 import 'package:projectsw2_movil/models/empleado.dart';
-import 'package:projectsw2_movil/screens/employee/create_employee.dart';
+import 'package:projectsw2_movil/screens/employee/create_employee_screen.dart';
 import 'package:projectsw2_movil/services/employee_service.dart';
 import 'package:projectsw2_movil/widgets/widgets.dart';
 import 'package:provider/provider.dart';
