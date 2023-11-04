@@ -4,7 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:projectsw2_movil/helpers/alert.dart';
 import 'dart:convert';
 import 'package:projectsw2_movil/models/envio.dart';
-import 'package:projectsw2_movil/services/server_service.dart';
+import 'package:projectsw2_movil/services/api_service.dart';
+
 
 class EnvioService extends ChangeNotifier {
   Envio? _envio;
@@ -14,7 +15,7 @@ class EnvioService extends ChangeNotifier {
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
   Future<Envio?> getEnvio(int id) async {
-    final urlPrincipal = ServerService().url;
+    final urlPrincipal = ApiService.baseUrl;
     final token = await _storage.read(key: 'token');
     final url = Uri.parse('$urlPrincipal/api/getEnvio');
     final response = await http.patch(
@@ -45,7 +46,7 @@ class EnvioService extends ChangeNotifier {
   Future<void> createEnvio(int id, int metodo, BuildContext context) async {
     mostrarLoading(context);
     final token = await _storage.read(key: 'token');
-    final url = ServerService().url;
+    final url = ApiService.baseUrl;
 
     final response = await http.post(
       Uri.parse('$url/api/createEnvio'),
@@ -73,7 +74,7 @@ class EnvioService extends ChangeNotifier {
   Future<void> updateEnvio(int id, String codigo, int estado, BuildContext context) async {
     mostrarLoading(context);
     final token = await _storage.read(key: 'token');
-    final url = ServerService().url;
+    final url = ApiService.baseUrl;
 
     final response = await http.post(
       Uri.parse('$url/api/storeEnvio'),

@@ -31,152 +31,99 @@ class HomeScreen extends StatelessWidget {
         centerTitle: true,
         title: const Text('Perfil'),
       ),
-      body: Center(
+      body: SingleChildScrollView(
         child: FutureBuilder<User>(
           future: authService.readUser(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return Stack(
+              User user = snapshot.data!;
+              return Column(
                 children: [
-                  Column(
-                    children: [
-                      Expanded(
-                        flex:3,
-                        child:Container(
-                          width: double.infinity,
-                          decoration: const BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [Color.fromARGB(255, 28, 15, 66),Color.fromARGB(255, 74, 69, 88)],
-                            ),
+                  Container(
+                    width: double.infinity,
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Color.fromARGB(255, 28, 15, 66),
+                          Color.fromARGB(255, 74, 69, 88)
+                        ],
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        SizedBox(height: 70.0),
+                        const CircleAvatar(
+                          radius: 70.0,
+                          backgroundImage: AssetImage("Assets/user.png"),
+                          backgroundColor: Colors.white,
+                        ),
+                        const SizedBox(height: 10.0),
+                        Text(
+                          user.name,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 30.0,
+                            fontWeight: FontWeight.w800,
                           ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    color: Colors.grey[200],
+                    padding: const EdgeInsets.only(top: 50, bottom: 50),
+                    child: Center(
+                      child: Card(
+                        margin: const EdgeInsets.fromLTRB(0.0, 0, 0.0, 0.0),
+                        child: Container(
+                          padding: const EdgeInsets.all(10.0),
+                          width: MediaQuery.of(context).size.width * .85,
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const SizedBox(height: 70),
-                              const CircleAvatar(
-                                radius: 70.0,
-                                backgroundImage: AssetImage("Assets/user.png"),
-                                backgroundColor: Colors.white,
+                              const Text(
+                                "Información",
+                                style: TextStyle(
+                                  fontSize: 25.0,
+                                  fontWeight: FontWeight.w800,
+                                ),
                               ),
-                              const SizedBox(height: 10.0,),
-                              Text(snapshot.data!.name,
-                              style: const TextStyle(
-                                color:Colors.white,
-                                fontSize: 30.0,
-                                fontWeight: FontWeight.w800,
-                              )),
-                          ]
+                              Divider(color: Colors.grey[300]),
+                              _buildInfoRow(
+                                icon: Icons.email_outlined,
+                                label: "Email",
+                                value: user.email,
+                              ),
+                              Divider(color: Colors.grey[300]),
+                              _buildInfoRow(
+                                icon: Icons.phone_android_outlined,
+                                label: "Celular",
+                                value: user.celular!,
+                                colorIcon: Colors.yellowAccent[400],
+                              ),
+                              Divider(color: Colors.grey[300]),
+                              _buildInfoRow(
+                                icon: Icons.manage_accounts_outlined,
+                                label: "Rol",
+                                value: user.rol,
+                                colorIcon: Colors.pinkAccent[400],
+                              ),
+
+                               Divider(color: Colors.grey[300]),
+                              (user.rol == 'Cliente') 
+                              ? _buildInfoRow(
+                                icon: Icons.web_sharp,
+                                label: "Casillero",
+                                value: user.casillero ?? '',
+                                colorIcon: Colors.brown[500],
+                              )
+                              : Container(),
+                              
+                            ],
                           ),
                         ),
                       ),
-                      Expanded(
-                        flex:4,
-                        child: Container(
-                          color: Colors.grey[200],
-                          child: Center(
-                              child:Card(
-                                  margin: const EdgeInsets.fromLTRB(0.0, 0, 0.0, 0.0),
-                                child: Container(
-                                  padding: const EdgeInsets.all(10.0),
-                                  width: MediaQuery.of(context).size.width * .85,
-                                  height: MediaQuery.of(context).size.height * .3,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      const Text("Información",
-                                      style: TextStyle(
-                                        fontSize: 25.0,
-                                        fontWeight: FontWeight.w800,
-                                      ),),
-                                      Divider(color: Colors.grey[300],),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          Icon(
-                                            Icons.email_outlined,
-                                            color: Colors.blueAccent[400],
-                                            size: 35,
-                                          ),
-                                          const SizedBox(width: 20.0,),
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              const Text("Email",
-                                                style: TextStyle(
-                                                  fontSize: 20.0,
-                                                ),),
-                                              Text(snapshot.data!.email,
-                                                style: TextStyle(
-                                                  fontSize: 15.0,
-                                                  color: Colors.grey[400],
-                                                ),)
-                                            ],
-                                          )
-
-                                        ],
-                                      ),
-                                      const SizedBox(height: 20.0,),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          Icon(
-                                            Icons.phone_android_outlined,
-                                            color: Colors.yellowAccent[400],
-                                            size: 35,
-                                          ),
-                                          const SizedBox(width: 20.0,),
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              const Text("Celular",
-                                                style: TextStyle(
-                                                  fontSize: 20.0,
-                                                ),),
-                                              Text(snapshot.data!.celular!,
-                                                style: TextStyle(
-                                                  fontSize: 15.0,
-                                                  color: Colors.grey[400],
-                                                ),)
-                                            ],
-                                          )
-
-                                        ],
-                                      ),
-                                      const SizedBox(height: 20.0,),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          Icon(
-                                            Icons.manage_accounts_outlined,
-                                            color: Colors.pinkAccent[400],
-                                            size: 35,
-                                          ),
-                                          const SizedBox(width: 20.0,),
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              const Text("Rol",
-                                                style: TextStyle(
-                                                  fontSize: 20.0,
-                                                ),),
-                                              Text(snapshot.data!.rol,
-                                                style: TextStyle(
-                                                  fontSize: 15.0,
-                                                  color: Colors.grey[400],
-                                                ),)
-                                            ],
-                                          )
-
-                                        ],
-                                      ),
-                                      const SizedBox(height: 20.0,)
-                                    ],
-                                  )
-                                )
-                              )
-                            ),
-                          ),
-                      ),
-                    ],
+                    ),
                   ),
                 ],
               );
@@ -186,6 +133,48 @@ class HomeScreen extends StatelessWidget {
           },
         ),
       ),
+    );
+  }
+
+  Widget _buildInfoRow({
+    required IconData icon,
+    required String label,
+    required String value,
+    Color? colorIcon,
+  }) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Icon(icon,
+            color: (colorIcon == null) ? Colors.blueAccent[400] : colorIcon,
+            size: 35),
+        const SizedBox(width: 20.0),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 20.0,
+              ),
+            ),
+            SizedBox(
+              width: 200, // Define un ancho máximo para el valor.
+              child: Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 15.0,
+                  color: Colors.black,
+                ),
+                maxLines:
+                    2, // Define el número máximo de líneas antes de truncar.
+                overflow: TextOverflow
+                    .ellipsis, // Define cómo se maneja el desbordamiento.
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

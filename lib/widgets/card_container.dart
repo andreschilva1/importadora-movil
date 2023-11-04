@@ -8,7 +8,7 @@ class CardContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30),
+      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
       child: Container(
         alignment: Alignment.center,
         width: double.infinity,

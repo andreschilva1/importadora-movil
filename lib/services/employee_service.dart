@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:projectsw2_movil/helpers/alert.dart';
 import 'dart:convert';
 import 'package:projectsw2_movil/models/empleado.dart';
-import 'package:projectsw2_movil/services/server_service.dart';
+import 'package:projectsw2_movil/services/api_service.dart';
 
 class EmployeeService extends ChangeNotifier {
   List<Empleado>? _empleados = [];
@@ -19,7 +19,7 @@ class EmployeeService extends ChangeNotifier {
   }
 
   Future<List<Empleado>> getEmployees() async {
-    final urlPrincipal = ServerService().url;
+    final urlPrincipal = ApiService.baseUrl;
     final token = await _storage.read(key: 'token');
     final url = Uri.parse('$urlPrincipal/api/getEmployees');
     final response = await http.get(url, headers: {
@@ -40,7 +40,7 @@ class EmployeeService extends ChangeNotifier {
       BuildContext context) async {
     mostrarLoading(context);
     final token = await _storage.read(key: 'token');
-    final url = ServerService().url;
+    final url = ApiService.baseUrl;
 
     final response = await http.post(
       Uri.parse('$url/api/createEmployee'),
@@ -70,7 +70,7 @@ class EmployeeService extends ChangeNotifier {
   Future<void> eliminar(BuildContext context, int id) async {
     mostrarLoading(context);
     final token = await _storage.read(key: 'token');
-    final url = ServerService().url;
+    final url = ApiService.baseUrl;
     final response = await http.delete(Uri.parse('$url/api/deleteEmployee'),
         headers: {
           "Content-Type": "application/json",
@@ -89,7 +89,7 @@ class EmployeeService extends ChangeNotifier {
   }
 
   Future<Empleado?> getEmployee(int id) async {
-    final urlPrincipal = ServerService().url;
+    final urlPrincipal = ApiService.baseUrl;
     final token = await _storage.read(key: 'token');
     final url = Uri.parse('$urlPrincipal/api/editEmployee');
     final response = await http.patch(url, headers: {
