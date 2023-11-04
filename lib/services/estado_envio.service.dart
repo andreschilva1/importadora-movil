@@ -3,7 +3,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:projectsw2_movil/models/estado_envio.dart';
 import 'dart:convert';
-import 'package:projectsw2_movil/services/server_service.dart';
+
+import 'package:projectsw2_movil/services/api_service.dart';
+
 
 class EstadoEnvioService extends ChangeNotifier {
   List<EstadoEnvio>? _estadoEnvio = [];
@@ -18,7 +20,7 @@ class EstadoEnvioService extends ChangeNotifier {
   }
 
   Future<List<EstadoEnvio>> getEstadoEnvio() async {
-    final urlPrincipal = ServerService().url;
+    final urlPrincipal = ApiService.baseUrl;
     final token = await _storage.read(key: 'token');
     final url = Uri.parse('$urlPrincipal/api/getEstadoEnvio');
     final response = await http.get(url, headers: {

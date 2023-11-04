@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:projectsw2_movil/helpers/alert.dart';
 import 'package:projectsw2_movil/models/paquete.dart';
 import 'package:projectsw2_movil/services/api_service.dart';
-import 'package:projectsw2_movil/services/server_service.dart';
+
 
 class PaqueteService extends ChangeNotifier {
   List<Paquete>? _paquetes = [];
@@ -24,9 +24,8 @@ class PaqueteService extends ChangeNotifier {
   }
 
   Future<List<Paquete>> getPaquetes() async {
-    final urlPrincipal = ServerService().url;
     final token = await _storage.read(key: 'token');
-    final url = Uri.parse('$urlPrincipal/api/obtenerPaquetes');
+    final url = Uri.parse('$_baseUrl/api/obtenerPaquetes');
     final response = await http.get(url, headers: {
       'Authorization': 'Bearer $token',
     });
