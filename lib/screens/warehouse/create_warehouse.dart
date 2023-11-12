@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projectsw2_movil/services/services.dart';
-import 'package:projectsw2_movil/widgets/card_container.dart';
-import 'package:projectsw2_movil/widgets/text_form_customer.dart';
+import 'package:projectsw2_movil/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
 class CreateWarehouseScreen extends StatelessWidget {

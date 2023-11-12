@@ -6,7 +6,7 @@ String paqueteToJson(List<Paquete> data) => json.encode(List<dynamic>.from(data.
 
 class Paquete {
     int id;
-    String? photoPath;
+    String photoPath;
     String codigo_rastreo;
     String peso;
     int cliente_id;
@@ -17,7 +17,7 @@ class Paquete {
 
     Paquete({
         required this.id,
-        this.photoPath,
+        required this.photoPath,
         required this.codigo_rastreo,
         required this.peso,
         required this.cliente_id,
@@ -29,7 +29,7 @@ class Paquete {
 
     factory Paquete.fromJson(Map<String, dynamic> json) => Paquete(
         id: json["id"],
-        photoPath: json["photoPath"],
+        photoPath: json["photo_path"],
         codigo_rastreo: json["codigo_rastreo"],
         peso: json["peso"],
         cliente_id: json["cliente_id"],

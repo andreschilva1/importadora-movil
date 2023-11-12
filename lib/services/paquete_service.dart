@@ -106,8 +106,6 @@ class PaqueteService extends ChangeNotifier {
     required codigoRastreo,
     required peso,
     required clienteId,
-    required almacenId,
-    required empleadoId,
   }) async {
     try {
       isLoading = true;
@@ -118,8 +116,6 @@ class PaqueteService extends ChangeNotifier {
         'codigo_rastreo': codigoRastreo,
         'peso': peso,
         'cliente_id': clienteId,
-        'almacen_id': almacenId,
-        'empleado_id': empleadoId,
       });
       if (response.statusCode == 200) {
         fetchPaquetes();

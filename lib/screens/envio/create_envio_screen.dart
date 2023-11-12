@@ -35,7 +35,7 @@ class _CreateEnvioScreenState extends State<CreateEnvioScreen> {
         testEnv: true,
       );
       await Stripe.instance.initPaymentSheet(
-          paymentSheetParameters: SetupPaymentSheetParameters(
+        paymentSheetParameters: SetupPaymentSheetParameters(
         paymentIntentClientSecret: paymentIntent!["client_secret"],
         style: ThemeMode.dark,
         merchantDisplayName: "Sabir",
@@ -144,7 +144,7 @@ class _CreateEnvioScreenState extends State<CreateEnvioScreen> {
                               style: TextStyle(color: Colors.white))),
                       onPressed: () {
                         Provider.of<EnvioService>(context, listen: false).createEnvio(widget.paquete, _value, context);
-                        // makePayment();
+                        makePayment();
                       }),
                 ),
               ],

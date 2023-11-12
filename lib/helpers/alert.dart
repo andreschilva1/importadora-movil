@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:projectsw2_movil/services/auth_services.dart';
 import 'package:projectsw2_movil/services/employee_service.dart';
 import 'package:projectsw2_movil/services/metodo_envio_service.dart';
 import 'package:projectsw2_movil/services/warehouse_service.dart';
@@ -8,8 +9,8 @@ mostrarLoading(BuildContext context, {String? mensaje}) {
   showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (_) =>  AlertDialog(
-            title: Text((mensaje != null) ? mensaje : 'Espere...'),
+      builder: (_) => AlertDialog(
+            title: Text((mensaje != null) ? mensaje : ''),
             content: const LinearProgressIndicator(),
           ));
 }
@@ -43,12 +44,15 @@ showAlertDialog(BuildContext context, String text, int id) async {
     child: const Text("Eliminar"),
     onPressed: () {
       FocusScope.of(context).unfocus();
-      if(text == "Almacen"){
-        Provider.of<WarehouseService>(context, listen: false).eliminar(context, id);
-      }else if (text == "Método de Envío"){
-        Provider.of<MetodoEnvioService>(context, listen: false).eliminar(context, id);
-      }else{ 
-        Provider.of<EmployeeService>(context, listen: false).eliminar(context, id);
+      if (text == "Almacen") {
+        Provider.of<WarehouseService>(context, listen: false)
+            .eliminar(context, id);
+      } else if (text == "Método de Envío") {
+        Provider.of<MetodoEnvioService>(context, listen: false)
+            .eliminar(context, id);
+      } else {
+        Provider.of<EmployeeService>(context, listen: false)
+            .eliminar(context, id);
       }
     },
   );
@@ -73,7 +77,6 @@ showAlertDialog(BuildContext context, String text, int id) async {
 }
 
 showAlertDialog2(BuildContext context, String text1, String text2) async {
-
   Widget okButton = TextButton(
     child: const Text("Ok"),
     onPressed: () {
@@ -136,9 +139,9 @@ void displayDialog(BuildContext context, String title, String content,
         ),
         actions: [
           Center(
-            child: TextButton(
+              child: TextButton(
                 style: TextButton.styleFrom(
-                  fixedSize: const Size(100, 50),
+                  fixedSize: const Size(150, 50),
                   textStyle: const TextStyle(fontSize: 20, color: Colors.white),
                   backgroundColor: color,
                   shape: RoundedRectangleBorder(
@@ -147,10 +150,50 @@ void displayDialog(BuildContext context, String title, String content,
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: const Text('ok')),
-          )
+                child: const Text('ok'),
+              ),
+            )
         ],
       );
     },
+  );
+}
+
+showDialogCerrarSesion(BuildContext context, AuthService authService) {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (_) => AlertDialog(
+      title: const Text('Cerrar Sesión'),
+      content: const Text('¿Desea cerrar sesion?'),
+      actions: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            MaterialButton(
+              color: const Color(0xff353759),
+              textColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5)),
+              child: const Text('si'),
+              onPressed: () async {
+                await authService.logout();
+                Navigator.pushNamed(context, 'login');
+              },
+            ),
+            MaterialButton(
+              color: const Color(0xff353759),
+              textColor: Colors.white,
+               shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5)),
+              child: const Text('Cancelar'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ],
+    ),
   );
 }

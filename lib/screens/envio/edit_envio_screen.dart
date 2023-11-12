@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:projectsw2_movil/helpers/input_decoration.dart';
+import 'package:projectsw2_movil/helpers/helpers.dart';
 import 'package:projectsw2_movil/models/estado_envio.dart';
-import 'package:projectsw2_movil/services/envio_service.dart';
-import 'package:projectsw2_movil/services/estado_envio.service.dart';
+import 'package:projectsw2_movil/services/services.dart';
 import 'package:projectsw2_movil/widgets/card_container.dart';
 import 'package:provider/provider.dart';
 
@@ -21,6 +20,7 @@ class EditEnvioScreen extends StatefulWidget {
 class _EditEnvioScreenState extends State<EditEnvioScreen> {
   TextEditingController codigo = TextEditingController();
   final formKey = GlobalKey<FormState>();
+  
 
   List<DropdownMenuItem<int>> _menuItems = [];
 
@@ -59,6 +59,7 @@ class _EditEnvioScreenState extends State<EditEnvioScreen> {
 
   @override
   Widget build(BuildContext context) {
+    TrakingService seguimientoEnvioService = Provider.of<TrakingService>(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -133,13 +134,22 @@ class _EditEnvioScreenState extends State<EditEnvioScreen> {
                                 horizontal: 70, vertical: 15),
                             child: const Text('Actualizar',
                                 style: TextStyle(color: Colors.white))),
-                        onPressed: () {
+                        onPressed: () async{
                           if (formKey.currentState!.validate()) {
-                            FocusScope.of(context).unfocus();
-                            Provider.of<EnvioService>(context, listen: false)
-                                .updateEnvio(widget.envio, codigo.text.trim(),
-                                    widget.metodo, context);
-                            Navigator.pop(context);
+                            final isRegistered = await seguimientoEnvioService.registrarNumeroTraking(codigo.text.trim());
+                            if (isRegistered) {
+                              FocusScope.of(context).unfocus();
+                              Provider.of<EnvioService>(context, listen: false)
+                                  .updateEnvio(widget.envio, codigo.text.trim(),
+                                      widget.metodo, context);
+                              Navigator.pop(context);
+                                                          
+                            }else{
+                              showBottomAlert(context: context,
+                              message: 'El numero de rastreo no existe',
+                              );
+                            }
+
                           }
                         }),
                   ),
