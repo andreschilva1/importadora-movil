@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:projectsw2_movil/helpers/alert.dart';
 import 'package:projectsw2_movil/models/models.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -7,7 +8,6 @@ import 'package:projectsw2_movil/services/api_service.dart';
 
 class AuthService extends ChangeNotifier {
   static final String _baseUrl = ApiService.baseUrl;
-  bool isLoading = false;
 
   User? _user;
   User? get user => _user;
@@ -19,10 +19,9 @@ class AuthService extends ChangeNotifier {
 
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
-  Future<bool> login(String email, String password) async {
+  Future<bool> login(String email, String password, BuildContext context) async {
     logout();
-    isLoading = true;
-    notifyListeners();
+    mostrarLoading(context, mensaje: 'Iniciando sesión...');
 
     String url = '$_baseUrl/api/login';
 
@@ -43,11 +42,13 @@ class AuthService extends ChangeNotifier {
 
       print('success login');
 
-      isLoading = false;
-      notifyListeners();
+
+      Navigator.of(context).pop();
       return true;
     } else {
       print('Failed to login');
+
+      Navigator.of(context).pop();
       return false;
       //throw Exception('Failed to login');
     }
@@ -112,7 +113,6 @@ class AuthService extends ChangeNotifier {
     await _storage.write(key: 'celular', value: celular);
     await _storage.write(key: 'foto', value: foto);
     await _storage.write(key: 'casillero', value: casillero);
-
   }
 
   Future<User> readUser() async {

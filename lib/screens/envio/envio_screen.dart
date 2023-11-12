@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:projectsw2_movil/helpers/alert.dart';
 import 'package:projectsw2_movil/models/envio.dart';
-import 'package:projectsw2_movil/screens/envio/create_envio_screen.dart';
-import 'package:projectsw2_movil/screens/envio/edit_envio_screen.dart';
-import 'package:projectsw2_movil/services/auth_services.dart';
-import 'package:projectsw2_movil/services/envio_service.dart';
+import 'package:projectsw2_movil/screens/screens.dart';
+import 'package:projectsw2_movil/services/services.dart';
 import 'package:projectsw2_movil/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -58,7 +57,7 @@ class EnvioScreen extends StatelessWidget {
                     top: 100,
                     left: 25,
                     right: 25,
-                    bottom:25,
+                    bottom: 25,
                     child: Card(
                         elevation: 5,
                         child: Container(
@@ -82,10 +81,37 @@ class EnvioScreen extends StatelessWidget {
                                   RowCustom(
                                     icon: Icons.source,
                                     color: Colors.blueAccent[400]!,
-                                    text: "Código de Rastreo",
-                                    subText: snapshot.data!.codigoRastreo == null
-                                        ? "No registrado"
-                                        : snapshot.data!.codigoRastreo!,
+                                    text: "Informacion de Rastreo",
+                                    subText:
+                                        snapshot.data!.codigoRastreo == null
+                                            ? "Codigo no registrado"
+                                            : snapshot.data!.codigoRastreo!,
+                                    child: TextButton(
+                                      onPressed: () {
+                                        if (snapshot.data!.codigoRastreo == null) {
+                                          showBottomAlert(
+                                              context: context,
+                                              message:
+                                                  "El envío no tiene un código de rastreo.",
+                                              color: Colors.red);
+                                          return;
+                                        }
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  SeguimientoScreen(numeroRastreo: snapshot.data!.codigoRastreo!),
+                                            )
+                                        );
+                                      },
+                                      style: TextButton.styleFrom(
+                                        backgroundColor: Colors.transparent,
+                                        shadowColor: Colors.transparent,
+                                      ),
+                                      child: Icon(Icons.visibility_outlined,
+                                          color: Colors.blueAccent.shade700,
+                                          size: 30),
+                                    ),
                                   ),
                                   const SizedBox(
                                     height: 20.0,
@@ -143,11 +169,12 @@ class EnvioScreen extends StatelessWidget {
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                       EditEnvioScreen(
-                                                        envio: snapshot.data!.id,
-                                                        codigo: snapshot
-                                                            .data!.codigoRastreo,
-                                                        metodo: snapshot
-                                                            .data!.envioEstadoId,
+                                                        envio:
+                                                            snapshot.data!.id,
+                                                        codigo: snapshot.data!
+                                                            .codigoRastreo,
+                                                        metodo: snapshot.data!
+                                                            .envioEstadoId,
                                                       )),
                                             );
                                           },
@@ -167,7 +194,7 @@ class EnvioScreen extends StatelessWidget {
             } else {
               if (authService.rol == "Cliente") {
                 return CreateEnvioScreen(peso: peso, paquete: paquete);
-              }else{
+              } else {
                 return Column(
                   children: [
                     CustomNotification(
@@ -188,66 +215,15 @@ class EnvioScreen extends StatelessWidget {
   }
 }
 
-class RowCustom extends StatelessWidget {
-  final IconData icon;
-  final Color color;
-  final String text;
-  final String subText;
 
-  const RowCustom(
-      {super.key,
-      required this.icon,
-      required this.color,
-      required this.text,
-      required this.subText});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Icon(
-          icon,
-          color: color,
-          size: 35,
-        ),
-        const SizedBox(
-          width: 20.0,
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              text,
-              style: const TextStyle(
-                fontSize: 20.0,
-              ),
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width * 0.6,
-              child: Text(
-                subText,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 15.0,
-                  color: Colors.grey[400],
-                ),
-              ),
-            )
-          ],
-        )
-      ],
-    );
-  }
-}
 
 class CustomNotification extends StatelessWidget {
   final String title;
   final String message;
   final void Function() onPressed;
 
-  const CustomNotification({super.key, 
+  const CustomNotification({
+    super.key,
     required this.title,
     required this.message,
     required this.onPressed,

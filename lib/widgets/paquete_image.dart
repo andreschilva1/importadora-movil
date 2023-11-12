@@ -17,7 +17,7 @@ class PaqueteImage extends StatelessWidget {
         child: Container(
           width: 370,
           height: 250,
-          decoration: imageBusBorder(),
+          decoration: imageBorder(),
           child: Image.file(
             foto,
             fit: BoxFit.cover,
@@ -33,7 +33,7 @@ class PaqueteImage extends StatelessWidget {
     );
   }
 
-  BoxDecoration imageBusBorder() =>
+  BoxDecoration imageBorder() =>
       BoxDecoration(color: Colors.white, boxShadow: [
         BoxShadow(color: Colors.black12, offset: Offset(0, 5), blurRadius: 10)
       ]);

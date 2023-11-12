@@ -36,12 +36,9 @@ class PaqueteZoomImageScreen extends StatelessWidget {
             ],
           ),
           Expanded(
-            child: FittedBox(
-              fit: BoxFit.contain,
-              child: InteractiveViewer(
-                maxScale: 5,
-                child: Image.file(foto,),
-              ),
+            child: InteractiveViewer(
+              maxScale: 5,
+              child: Image.file(foto,),
             ),
           ),
         ],

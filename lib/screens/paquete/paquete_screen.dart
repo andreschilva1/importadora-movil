@@ -1,13 +1,11 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:projectsw2_movil/models/paquete.dart';
-import 'package:projectsw2_movil/screens/envio/envio_screen.dart';
-import 'package:projectsw2_movil/screens/paquete/create_paquete_screen.dart';
-import 'package:projectsw2_movil/screens/paquete/show_almacen_screen.dart';
-import 'package:projectsw2_movil/screens/paquete/show_cliente_screen.dart';
-import 'package:projectsw2_movil/screens/paquete/show_empleado_screen.dart';
+import 'package:projectsw2_movil/screens/screens.dart';
 import 'package:projectsw2_movil/services/services.dart';
 import 'package:projectsw2_movil/widgets/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 class PaqueteScreen extends StatefulWidget {
   const PaqueteScreen({Key? key}) : super(key: key);
@@ -17,6 +15,7 @@ class PaqueteScreen extends StatefulWidget {
 }
 
 class _PaqueteScreenState extends State<PaqueteScreen> {
+
   @override
   void initState() {
     super.initState();
@@ -79,13 +78,34 @@ class _PaqueteScreenState extends State<PaqueteScreen> {
                       children: [
                         Expanded(
                           child: Row(children: [
-                            SizedBox(
+                            InkWell(
+                              onTap: () async {
+                                File file = await DefaultCacheManager()
+                                    .getSingleFile(paquete.photoPath);
+                                if (mounted) {   
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            PaqueteZoomImageScreen(
+                                              foto: file,
+                                            )),
+                                  );
+                                }
+                              },
+                              child: SizedBox(
                                 width: 60,
                                 height: 60,
                                 child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(20),
-                                  child: Image.asset("Assets/paquete.jpg"),
-                                )),
+                                    borderRadius: BorderRadius.circular(20),
+                                    child: FadeInImage(
+                                      placeholder:
+                                          const AssetImage('Assets/caja.gif'),
+                                      image: NetworkImage(paquete.photoPath),
+                                      fit: BoxFit.cover,
+                                    )),
+                              ),
+                            ),
                             const SizedBox(width: 10),
                             Flexible(
                               child: Column(

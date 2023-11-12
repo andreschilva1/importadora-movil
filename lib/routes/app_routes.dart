@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:projectsw2_movil/screens/employee/employee_screen.dart';
+import 'package:projectsw2_movil/screens/envio/seguimiento_screen.dart';
 import 'package:projectsw2_movil/screens/metodoEnvio/metodo_envio_screen.dart';
 import 'package:projectsw2_movil/screens/paquete/paquete_screen.dart';
+import 'package:projectsw2_movil/screens/rastreo/rastreo_screen.dart';
 import 'package:projectsw2_movil/screens/screens.dart';
 
 class AppRoutes {
@@ -18,6 +20,8 @@ class AppRoutes {
   static final routesCliente = <RouteDefinition>[
     const RouteDefinition('Home', Icons.home, 'home', HomeScreen()),
     const RouteDefinition('Paquete', Icons.add_box_outlined, 'paquete', PaqueteScreen()),
+    const RouteDefinition('Rastreo de Paquetes', Icons.radar, 'rastreo', RastreoScreen()),
+    
   ];
 
   static Map<String, Widget Function(BuildContext)> getAppRoutes(BuildContext context){
@@ -27,6 +31,10 @@ class AppRoutes {
     for (var element in routes) {
       appRoutes.addAll({element.route: (context) => element.screen});
     }
+    for (var element in routesCliente) {
+      appRoutes.addAll({element.route: (context) => element.screen});
+    }
+    
     return appRoutes;
   }
 }
