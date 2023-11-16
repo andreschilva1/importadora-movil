@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:projectsw2_movil/helpers/alert.dart';
 import 'dart:convert';
 import 'package:projectsw2_movil/models/metodo_envio.dart';
-import 'package:projectsw2_movil/services/server_service.dart';
+import 'package:projectsw2_movil/services/api_service.dart';
 
 class MetodoEnvioService extends ChangeNotifier {
   List<MetodoEnvio>? _metodoEnvios = [];
@@ -19,7 +19,7 @@ class MetodoEnvioService extends ChangeNotifier {
   }
 
   Future<List<MetodoEnvio>> getMetodoEnvios() async {
-    final urlPrincipal = ServerService().url;
+    final urlPrincipal = ApiService.baseUrl;
     final token = await _storage.read(key: 'token');
     final url = Uri.parse('$urlPrincipal/api/getMetodoEnvio');
     final response = await http.get(url, headers: {
@@ -39,7 +39,7 @@ class MetodoEnvioService extends ChangeNotifier {
   void crearMetodoEnvio(String transportista, String metodo, String costo_kg, BuildContext context) async {
     mostrarLoading(context);
     final token = await _storage.read(key: 'token');
-    final url = ServerService().url;
+    final url = ApiService.baseUrl;
 
     final response = await http.post(
       Uri.parse('$url/api/createMetodoEnvio'),
@@ -68,7 +68,7 @@ class MetodoEnvioService extends ChangeNotifier {
   eliminar(BuildContext context, int id) async {
     mostrarLoading(context);
     final token = await _storage.read(key: 'token');
-    final url = ServerService().url;
+    final url = ApiService.baseUrl;
     final response = await http.delete(Uri.parse('$url/api/deleteMetodoEnvio'),
         headers: {
           "Content-Type": "application/json",

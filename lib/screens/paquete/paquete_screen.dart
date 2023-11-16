@@ -115,57 +115,58 @@ class _PaqueteScreenState extends State<PaqueteScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        InkWellParameters( 
-                          text: "Ver almacén", 
-                          color: Colors.green, 
-                          onTap: () {  
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ShowAlmacen(almacen: paquete.almacen_id)),
-                            );
-                          }
-                        ),
+                        InkWellParameters(
+                            text: "Ver almacén",
+                            color: Colors.green,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ShowAlmacen(
+                                        almacen: paquete.almacen_id)),
+                              );
+                            }),
                         const SizedBox(
                           width: 7,
                         ),
                         user!.rol == "Cliente"
-                          ? InkWellParameters( 
-                              text: "Ver Empleado", 
-                              color: Colors.lightBlue, 
-                              onTap: () {  
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ShowEmpleado(empleado: paquete.empleado_id)),
-                                );
-                              }
-                            )
-                          : InkWellParameters( 
-                            text: "Ver Cliente", 
-                            color: Colors.lightBlue, 
-                            onTap: () {  
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ShowCliente(empleado: paquete.cliente_id)),
-                              );
-                            }
-                          ),
+                            ? InkWellParameters(
+                                text: "Empleado",
+                                color: Colors.lightBlue,
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ShowEmpleado(
+                                            empleado: paquete.empleado_id)),
+                                  );
+                                })
+                            : InkWellParameters(
+                                text: "Cliente",
+                                color: Colors.lightBlue,
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ShowCliente(
+                                            empleado: paquete.cliente_id)),
+                                  );
+                                }),
                         const SizedBox(
                           width: 7,
                         ),
-                        InkWellParameters( 
-                          text: "Gestionar Envío", 
-                          color: const Color.fromARGB(255, 244, 3, 152), 
-                          onTap: () {  
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => EnvioScreen(paquete: paquete.id, peso: paquete.peso)),
-                            );
-                          }
-                        ),
+                        InkWellParameters(
+                            text: "Envío",
+                            color: const Color.fromARGB(255, 244, 3, 152),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => EnvioScreen(
+                                        paquete: paquete.id,
+                                        peso: paquete.peso)),
+                              );
+                            }),
                       ],
                     )
                   ],
@@ -197,10 +198,16 @@ class InkWellParameters extends StatelessWidget {
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+        // ancho máximo del 15% del ancho total de la pantalla
+        width: MediaQuery.of(context).size.width * 0.25,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12), color: color),
+          borderRadius: BorderRadius.circular(12),
+          color: color,
+        ),
         child: Text(
           text,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: const TextStyle(color: Colors.white),
         ),
       ),

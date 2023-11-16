@@ -36,11 +36,10 @@ class AuthService extends ChangeNotifier {
       final token = responseData['token'];
       _user = User.fromJson(response.body);
 
-      await _storage.write(key: 'token', value: token);
 
-      print(token);
+      //print(token);
       await storageWrite(token, user?.id, user!.email, user!.name, user!.rol,
-          user?.celular, user?.foto);
+          user?.celular, user?.foto, user?.casillero);
 
       print('success login');
 
@@ -77,6 +76,8 @@ class AuthService extends ChangeNotifier {
     if (token == null) {
       return false;
     }
+    print('token: ' + token);
+    
     String url = '$_baseUrl/api/user';
     final response = await http.get(Uri.parse(url), headers: {
       'Authorization': 'Bearer $token',
@@ -102,7 +103,7 @@ class AuthService extends ChangeNotifier {
   }
 
   Future storageWrite(String idToken, int? id, String email, String name,
-      String rol, String? celular, String? foto) async {
+      String rol, String? celular, String? foto, String? casillero) async {
     await _storage.write(key: 'token', value: idToken);
     await _storage.write(key: 'id', value: id.toString());
     await _storage.write(key: 'name', value: name);
@@ -110,6 +111,8 @@ class AuthService extends ChangeNotifier {
     await _storage.write(key: 'rol', value: rol);
     await _storage.write(key: 'celular', value: celular);
     await _storage.write(key: 'foto', value: foto);
+    await _storage.write(key: 'casillero', value: casillero);
+
   }
 
   Future<User> readUser() async {
@@ -119,9 +122,8 @@ class AuthService extends ChangeNotifier {
     final rol = await _storage.read(key: 'rol');
     final celular = await _storage.read(key: 'celular');
     final foto = await _storage.read(key: 'foto');
-
+    final casillero = await _storage.read(key: 'casillero');
     fetchUser();
-
     return User(
       id: int.tryParse(id ?? ''),
       name: name ?? '',
@@ -129,6 +131,7 @@ class AuthService extends ChangeNotifier {
       rol: rol ?? '',
       celular: celular ?? '',
       foto: foto ?? '',
+      casillero: casillero ?? '',
     );
   }
 }
