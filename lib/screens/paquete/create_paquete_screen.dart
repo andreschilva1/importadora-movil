@@ -1,13 +1,8 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:projectsw2_movil/helpers/alert.dart';
-import 'package:projectsw2_movil/helpers/input_decoration.dart';
-import 'package:projectsw2_movil/services/image_picker_service.dart';
-import 'package:projectsw2_movil/services/paquete_service.dart';
-import 'package:projectsw2_movil/widgets/card_container.dart';
-import 'package:projectsw2_movil/widgets/paquete_image.dart';
+import 'package:projectsw2_movil/helpers/helpers.dart';
+import 'package:projectsw2_movil/services/services.dart';
+import 'package:projectsw2_movil/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
 class CreatePaqueteScreen extends StatefulWidget {
@@ -29,7 +24,6 @@ class _CreatePaqueteScreenState extends State<CreatePaqueteScreen> {
   late PaqueteService _paqueteService;
   String _photoPath = '';
   String? _clienteId;
-  final _almacenId = '1';
 
   @override
   void initState() {
@@ -73,8 +67,6 @@ class _CreatePaqueteScreenState extends State<CreatePaqueteScreen> {
   }
 
   Future<void> registrarPaquete() async {
-    FlutterSecureStorage storage = const FlutterSecureStorage();
-    String? empleadoId = await storage.read(key: 'id');
     if (_formKey.currentState!.validate()) {
       FocusScope.of(context).unfocus();
       if (_imagenPaquete == null) {
@@ -93,8 +85,6 @@ class _CreatePaqueteScreenState extends State<CreatePaqueteScreen> {
             codigoRastreo: _codigoRastreoController.text.trim(),
             peso: _pesoController.text.trim(),
             clienteId: _clienteId,
-            almacenId: _almacenId,
-            empleadoId: empleadoId!,
           );
           //navegar a la pantalla de home
           if (context.mounted) {

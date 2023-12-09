@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:projectsw2_movil/helpers/helpers.dart';
 import 'package:projectsw2_movil/services/services.dart';
-import 'package:projectsw2_movil/utils/utils.dart';
 import 'package:projectsw2_movil/widgets/text_frave.dart';
 import 'package:provider/provider.dart';
 
@@ -78,14 +78,14 @@ class DraggableScrollRegister extends StatelessWidget {
                   authService.register(name.text.trim(), email.text.trim(),
                       password.text.trim(), celular.text.trim());
                   final succes = await authService.login(
-                      email.text.trim(), password.text.trim());
+                      email.text.trim(), password.text.trim() , context);
                   if (succes) {
                     if (context.mounted) {
                       Navigator.pushReplacementNamed(context, 'home');
                     }
                   } else {
                     if (context.mounted) {
-                      ShowAlert.displayDialog(
+                      displayDialog(
                           context,
                           'Error de inicio de Sesion',
                           'Email o contraseña incorrectos',

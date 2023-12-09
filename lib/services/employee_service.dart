@@ -1,9 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:projectsw2_movil/helpers/alert.dart';
 import 'dart:convert';
-import 'package:projectsw2_movil/models/empleado.dart';
+import 'package:projectsw2_movil/models/models.dart';
 import 'package:projectsw2_movil/services/api_service.dart';
 
 class EmployeeService extends ChangeNotifier {
@@ -36,7 +38,7 @@ class EmployeeService extends ChangeNotifier {
     }
   }
 
-  Future<void> crearEmpleado(String name, String email, String password, String celular,
+  Future<void> crearEmpleado(String name, String email, String password, String celular, String almacenId,
       BuildContext context) async {
     mostrarLoading(context);
     final token = await _storage.read(key: 'token');
@@ -53,6 +55,7 @@ class EmployeeService extends ChangeNotifier {
         'email': email,
         'password': password,
         'celular': celular,
+        'almacenId':almacenId,
       }),
     );
 
@@ -88,7 +91,7 @@ class EmployeeService extends ChangeNotifier {
     }
   }
 
-  Future<Empleado?> getEmployee(int id) async {
+  Future<User?> getEmployee(int id) async {
     final urlPrincipal = ApiService.baseUrl;
     final token = await _storage.read(key: 'token');
     final url = Uri.parse('$urlPrincipal/api/editEmployee');
@@ -103,7 +106,7 @@ class EmployeeService extends ChangeNotifier {
 
     if (200 == response.statusCode) {
       final respuesta = jsonDecode(response.body);
-      final Empleado empleado = empleadoFromJson1(jsonEncode(respuesta['data']));
+      final User empleado = User.fromJson(jsonEncode(respuesta));
       return empleado;
     } else {
       return null;

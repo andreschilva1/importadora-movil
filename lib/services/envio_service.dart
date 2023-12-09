@@ -43,7 +43,7 @@ class EnvioService extends ChangeNotifier {
     }
   }
 
-  Future<void> createEnvio(int id, int metodo, BuildContext context) async {
+  Future<void> createEnvio(int id, String metodo, BuildContext context) async {
     // mostrarLoading(context);
     final token = await _storage.read(key: 'token');
     final url = ApiService.baseUrl;

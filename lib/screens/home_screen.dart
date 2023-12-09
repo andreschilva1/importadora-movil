@@ -5,11 +5,27 @@ import 'package:projectsw2_movil/services/services.dart';
 import 'package:projectsw2_movil/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    initData();
+  }
+
+  Future<void> initData() async {
+    Provider.of<WarehouseService>(context, listen: false).fetchWarehouses();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final authService = Provider.of<AuthService>(context, listen: false);
+    final authService = Provider.of<AuthService>(context);
 
     return Scaffold(
       drawer: const SidebarDrawer(),
@@ -51,7 +67,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                     child: Column(
                       children: [
-                        SizedBox(height: 70.0),
+                        const SizedBox(height: 70.0),
                         const CircleAvatar(
                           radius: 70.0,
                           backgroundImage: AssetImage("Assets/user.png"),
@@ -108,17 +124,24 @@ class HomeScreen extends StatelessWidget {
                                 value: user.rol,
                                 colorIcon: Colors.pinkAccent[400],
                               ),
-
-                               Divider(color: Colors.grey[300]),
-                              (user.rol == 'Cliente') 
-                              ? _buildInfoRow(
-                                icon: Icons.web_sharp,
-                                label: "Casillero",
-                                value: user.casillero ?? '',
-                                colorIcon: Colors.brown[500],
-                              )
-                              : Container(),
-                              
+                              Divider(color: Colors.grey[300]),
+                              (user.rol == 'Cliente')
+                                  ? _buildInfoRow(
+                                      icon: Icons.web_sharp,
+                                      label: "Casillero",
+                                      value: user.casillero ?? '',
+                                      colorIcon: Colors.brown[500],
+                                    )
+                                  : Container(),
+                              // Divider(color: Colors.grey[300]),
+                              (user.rol == 'Empleado')
+                                  ? _buildInfoRow(
+                                      icon: Icons.web_sharp,
+                                      label: "Almacén",
+                                      value: user.almacen ?? '',
+                                      colorIcon: Colors.brown[500],
+                                    )
+                                  : Container(),
                             ],
                           ),
                         ),

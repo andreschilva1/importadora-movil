@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:projectsw2_movil/helpers/helpers.dart';
 import 'package:projectsw2_movil/services/services.dart';
 import 'package:projectsw2_movil/theme/app_theme.dart';
-import 'package:projectsw2_movil/utils/utils.dart';
 import 'package:projectsw2_movil/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -16,6 +16,38 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final FocusNode _emailFocusNode = FocusNode();
+  final FocusNode _passwordFocusNode = FocusNode();
+  bool _isEmailFocused = false;
+  bool _isPasswordFocused = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _emailFocusNode.addListener(_handleEmailFocusChange);
+    _passwordFocusNode.addListener(_handlePasswordFocusChange);
+  }
+
+  @override
+  void dispose() {
+    _emailFocusNode.removeListener(_handleEmailFocusChange);
+    _emailFocusNode.dispose();
+    _passwordFocusNode.removeListener(_handlePasswordFocusChange);
+    _passwordFocusNode.dispose();
+    super.dispose();
+  }
+
+  void _handleEmailFocusChange() {
+    setState(() {
+      _isEmailFocused = _emailFocusNode.hasFocus;
+    });
+  }
+
+  void _handlePasswordFocusChange() {
+    setState(() {
+      _isPasswordFocused = _passwordFocusNode.hasFocus;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,12 +111,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     errorMessagge: 'Ingrese su Email',
                     controller: _emailController,
                     labelText: 'Email',
+                    focusNode: _emailFocusNode,
                   ),
                   _InputCustom(
                     errorMessagge: 'Ingrese su contraseña',
                     controller: _passwordController,
                     labelText: 'Contraseña',
                     obscureText: true,
+                    focusNode: _passwordFocusNode,
                   ),
                   const SizedBox(height: 20),
                   SizedBox(
@@ -94,23 +128,21 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: TextButton.styleFrom(
                         backgroundColor: const Color.fromRGBO(211, 55, 69, 1),
                       ),
-                      onPressed: authService.isLoading
-                          ? null
-                          : () async {
+                      onPressed:  () async {
                               if (_formKey.currentState?.validate() ?? false) {
                                 final email = _emailController.text.trim();
                                 final password =
                                     _passwordController.text.trim();
                                 final succes =
-                                    await authService.login(email, password);
-                                if (succes ) {
-                                  if (context.mounted) {  
+                                    await authService.login(email, password, context);
+                                if (succes) {
+                                  if (context.mounted) {
                                     Navigator.pushReplacementNamed(
                                         context, 'home');
                                   }
                                 } else {
-                                  if (context.mounted) {  
-                                    ShowAlert.displayDialog(
+                                  if (context.mounted) {
+                                    displayDialog(
                                         context,
                                         'Error de inicio de Sesion',
                                         'Email o contraseña incorrectos',
@@ -120,10 +152,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 }
                               }
                             },
-                      child: TextFrave(
-                          text: authService.isLoading
-                              ? 'Espere...'
-                              : 'Iniciar Sesión',
+                      child:const  TextFrave(
+                          text: 'Iniciar Sesión',
                           fontSize: 22,
                           color: Colors.white,
                           fontWeight: FontWeight.bold),
@@ -134,9 +164,9 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
           DraggableScrollableSheet(
-            initialChildSize: 0.16,
-            minChildSize: 0.10,
-            maxChildSize: 0.85,
+            initialChildSize: _isEmailFocused || _isPasswordFocused ? 0.0 : 0.16,
+            minChildSize: _isEmailFocused || _isPasswordFocused ? 0.0 : 0.16,
+            maxChildSize: _isEmailFocused || _isPasswordFocused ? 0.0 : 0.85,
             builder: (_, s) => DraggableScrollRegister(scrollController: s),
           ),
         ],
@@ -150,12 +180,14 @@ class _InputCustom extends StatelessWidget {
   final TextEditingController controller;
   final String labelText;
   final bool obscureText;
+  final FocusNode? focusNode;
 
   const _InputCustom({
     required this.errorMessagge,
     required this.controller,
     required this.labelText,
     this.obscureText = false,
+    this.focusNode,
   });
 
   @override
@@ -165,6 +197,7 @@ class _InputCustom extends StatelessWidget {
       child: SizedBox(
         width: MediaQuery.of(context).size.width * .9,
         child: TextFormField(
+          focusNode: focusNode,
           obscureText: obscureText,
           style: const TextStyle(color: Colors.white),
           validator: (value) {

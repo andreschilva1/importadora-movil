@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:projectsw2_movil/helpers/alert.dart';
 import 'package:projectsw2_movil/models/models.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -7,7 +8,6 @@ import 'package:projectsw2_movil/services/api_service.dart';
 
 class AuthService extends ChangeNotifier {
   static final String _baseUrl = ApiService.baseUrl;
-  bool isLoading = false;
 
   User? _user;
   User? get user => _user;
@@ -19,10 +19,9 @@ class AuthService extends ChangeNotifier {
 
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
-  Future<bool> login(String email, String password) async {
+  Future<bool> login(String email, String password, BuildContext context) async {
     logout();
-    isLoading = true;
-    notifyListeners();
+    mostrarLoading(context, mensaje: 'Iniciando sesión...');
 
     String url = '$_baseUrl/api/login';
 
@@ -37,17 +36,19 @@ class AuthService extends ChangeNotifier {
       _user = User.fromJson(response.body);
 
 
-      //print(token);
+      //debugPrint(token);
       await storageWrite(token, user?.id, user!.email, user!.name, user!.rol,
-          user?.celular, user?.foto, user?.casillero);
+          user?.celular, user?.foto, user?.casillero, user?.almacen);
 
-      print('success login');
+      debugPrint('success login');
 
-      isLoading = false;
-      notifyListeners();
+
+      Navigator.of(context).pop();
       return true;
     } else {
-      print('Failed to login');
+      debugPrint('Failed to login');
+
+      Navigator.of(context).pop();
       return false;
       //throw Exception('Failed to login');
     }
@@ -65,9 +66,9 @@ class AuthService extends ChangeNotifier {
     });
 
     if (200 == response.statusCode) {
-      print('success register');
+      debugPrint('success register');
     } else {
-      print('Failed to register');
+      debugPrint('Failed to register');
     }
   }
 
@@ -76,7 +77,7 @@ class AuthService extends ChangeNotifier {
     if (token == null) {
       return false;
     }
-    print('token: ' + token);
+    debugPrint('token: ' + token);
     
     String url = '$_baseUrl/api/user';
     final response = await http.get(Uri.parse(url), headers: {
@@ -103,7 +104,7 @@ class AuthService extends ChangeNotifier {
   }
 
   Future storageWrite(String idToken, int? id, String email, String name,
-      String rol, String? celular, String? foto, String? casillero) async {
+      String rol, String? celular, String? foto, String? casillero, String? almacen) async {
     await _storage.write(key: 'token', value: idToken);
     await _storage.write(key: 'id', value: id.toString());
     await _storage.write(key: 'name', value: name);
@@ -112,7 +113,7 @@ class AuthService extends ChangeNotifier {
     await _storage.write(key: 'celular', value: celular);
     await _storage.write(key: 'foto', value: foto);
     await _storage.write(key: 'casillero', value: casillero);
-
+    await _storage.write(key: 'almacen', value: almacen);
   }
 
   Future<User> readUser() async {
@@ -123,6 +124,7 @@ class AuthService extends ChangeNotifier {
     final celular = await _storage.read(key: 'celular');
     final foto = await _storage.read(key: 'foto');
     final casillero = await _storage.read(key: 'casillero');
+    final almacen = await _storage.read(key: 'almacen');
     fetchUser();
     return User(
       id: int.tryParse(id ?? ''),
@@ -132,6 +134,7 @@ class AuthService extends ChangeNotifier {
       celular: celular ?? '',
       foto: foto ?? '',
       casillero: casillero ?? '',
+      almacen: almacen ?? '',
     );
   }
 }
