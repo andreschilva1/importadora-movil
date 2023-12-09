@@ -10,9 +10,9 @@ mostrarLoading(BuildContext context, {String? mensaje}) {
       context: context,
       barrierDismissible: false,
       builder: (_) => AlertDialog(
-            title: Text((mensaje != null) ? mensaje : 'En Progreso'),
-            content: const LinearProgressIndicator(),
-          ));
+        title: Text((mensaje != null) ? mensaje : 'En Progreso'),
+        content: const LinearProgressIndicator(),
+      ));
 }
 
 mostrarAlerta(BuildContext context, String titulo, String mensaje) {

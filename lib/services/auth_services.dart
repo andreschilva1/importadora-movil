@@ -114,6 +114,7 @@ class AuthService extends ChangeNotifier {
     await _storage.write(key: 'foto', value: foto);
     await _storage.write(key: 'casillero', value: casillero);
     await _storage.write(key: 'almacen', value: almacen);
+
   }
 
   Future<User> readUser() async {

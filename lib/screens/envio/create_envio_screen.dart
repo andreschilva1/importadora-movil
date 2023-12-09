@@ -34,7 +34,7 @@ class _CreateEnvioScreenState extends State<CreateEnvioScreen> {
         testEnv: true,
       );
       await Stripe.instance.initPaymentSheet(
-          paymentSheetParameters: SetupPaymentSheetParameters(
+        paymentSheetParameters: SetupPaymentSheetParameters(
         paymentIntentClientSecret: paymentIntent!["client_secret"],
         style: ThemeMode.dark,
         merchantDisplayName: "",

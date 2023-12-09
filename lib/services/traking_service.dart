@@ -37,7 +37,9 @@ class TrakingService extends ChangeNotifier {
         throw Exception('Failed to load data!');
       }
     } catch (e) {
+
       debugPrint('Error en la solicitud: $e');
+
       if (context.mounted) {
         displayDialog(context, 'Error',
             'Numero de Rastreo no Encontrado', Icons.error, Colors.red);
@@ -63,6 +65,7 @@ class TrakingService extends ChangeNotifier {
       }
     } catch (e) {
       debugPrint('Error en la solicitud: $e');
+
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -89,6 +92,7 @@ class TrakingService extends ChangeNotifier {
       }
     } catch (e) {
       debugPrint('Error en la solicitud: $e');
+
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -106,7 +110,9 @@ class TrakingService extends ChangeNotifier {
         return rastreos;
       }
     } catch (e) {
+
       debugPrint('Error en la solicitud: $e');
+
     }
   }
 
@@ -126,6 +132,7 @@ class TrakingService extends ChangeNotifier {
       }
     } catch (e) {
       debugPrint('Error en la solicitud: $e');
+
 
       if (context.mounted) {
         Navigator.of(context).pop();
@@ -156,7 +163,9 @@ class TrakingService extends ChangeNotifier {
         return false;
       }
     } catch (e) {
+
       debugPrint('Error en la solicitud: $e');
+
       if (context.mounted) {
         displayDialog(context, 'Error',
             'error al cambiar de transportista', Icons.error, Colors.red);

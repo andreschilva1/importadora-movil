@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projectsw2_movil/screens/calculadora/calculadora_screen.dart';
 import 'package:projectsw2_movil/screens/employee/employee_screen.dart';
+import 'package:projectsw2_movil/screens/envio/seguimiento_screen.dart';
 import 'package:projectsw2_movil/screens/metodoEnvio/metodo_envio_screen.dart';
 import 'package:projectsw2_movil/screens/rastreo/rastreo_screen.dart';
 import 'package:projectsw2_movil/screens/screens.dart';

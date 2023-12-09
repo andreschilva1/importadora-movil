@@ -18,6 +18,7 @@ class PaqueteScreen extends StatefulWidget {
 }
 
 class _PaqueteScreenState extends State<PaqueteScreen> {
+
   @override
   void initState() {
     super.initState();
@@ -124,8 +125,7 @@ class _PaqueteScreenState extends State<PaqueteScreen> {
                                     )),
                               ),
                             )
-                            : const SizedBox(),
-                            const SizedBox(width: 10),
+                            : const SizedBox(),edBox(width: 10),
                             Flexible(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
