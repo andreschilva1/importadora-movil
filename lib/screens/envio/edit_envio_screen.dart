@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:projectsw2_movil/helpers/helpers.dart';
 import 'package:projectsw2_movil/models/estado_envio.dart';
@@ -5,6 +7,7 @@ import 'package:projectsw2_movil/services/services.dart';
 import 'package:projectsw2_movil/widgets/card_container.dart';
 import 'package:provider/provider.dart';
 
+// ignore: must_be_immutable
 class EditEnvioScreen extends StatefulWidget {
   final int envio;
   final String? codigo;

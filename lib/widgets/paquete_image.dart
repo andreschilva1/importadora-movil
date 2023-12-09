@@ -34,7 +34,8 @@ class PaqueteImage extends StatelessWidget {
   }
 
   BoxDecoration imageBorder() =>
-      BoxDecoration(color: Colors.white, boxShadow: [
+      const BoxDecoration(color: Colors.white, boxShadow: [
+
         BoxShadow(color: Colors.black12, offset: Offset(0, 5), blurRadius: 10)
       ]);
 }

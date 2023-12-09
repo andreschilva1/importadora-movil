@@ -127,6 +127,16 @@ class _MetodoEnvioScreenState extends State<MetodoEnvioScreen> {
                                     ),
                                   ),
                                 ),
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.42,
+                                  child: Text(
+                                    "País: ${metodoEnvio.pais.name}",
+                                    style: const TextStyle(
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ),
                                 const SizedBox(
                                   height: 5,
                                 ),
@@ -141,7 +151,11 @@ class _MetodoEnvioScreenState extends State<MetodoEnvioScreen> {
                                     children: <Widget>[
                                       ElevatedButton.icon(
                                           onPressed: () {
-                                            showAlertDialog(context, "Método de Envío", metodoEnvio.id);
+                                            showAlertDialog(context, (){
+                                              FocusScope.of(context).unfocus();
+                                              Provider.of<MetodoEnvioService>(context, listen: false)
+                                                  .eliminar(context, metodoEnvio.id);
+                                            });
                                           },
                                           label: const Text('Eliminar'),
                                           icon: const Icon(Icons.delete),
@@ -156,7 +170,7 @@ class _MetodoEnvioScreenState extends State<MetodoEnvioScreen> {
                                     children: <Widget>[
                                       ElevatedButton.icon(
                                           onPressed: () {
-                                            showAlertDialog(context, "Método de Envío", metodoEnvio.id);
+                                            // showAlertDialog(context, "Método de Envío", metodoEnvio.id);
                                           },
                                           label: const Text('Editar'),
                                           icon: const Icon(Icons.edit),

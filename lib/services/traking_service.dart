@@ -25,7 +25,7 @@ class TrakingService extends ChangeNotifier {
       final response = await apiService.post('api/getTrackInfo', {
         'numeroRastreo': numeroRastreo,
       });
-      print('ejecutandose el metodo getTrackInfo');
+      debugPrint('ejecutandose el metodo getTrackInfo');
       if (response.statusCode == 200) {
         Seguimiento seguimiento =
             Seguimiento.fromJson(jsonDecode(response.body));
@@ -37,7 +37,9 @@ class TrakingService extends ChangeNotifier {
         throw Exception('Failed to load data!');
       }
     } catch (e) {
-      print('Error en la solicitud: $e');
+
+      debugPrint('Error en la solicitud: $e');
+
       if (context.mounted) {
         displayDialog(context, 'Error',
             'Numero de Rastreo no Encontrado', Icons.error, Colors.red);
@@ -55,14 +57,15 @@ class TrakingService extends ChangeNotifier {
       });
 
       if (response.statusCode == 200) {
-        print('registrado correctamente');
+        debugPrint('registrado correctamente');
         return true;
       } else {
-        print(response.body);
+        debugPrint(response.body);
         return false;
       }
     } catch (e) {
-      print('Error en la solicitud: $e');
+      debugPrint('Error en la solicitud: $e');
+
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -81,14 +84,15 @@ class TrakingService extends ChangeNotifier {
       });
 
       if (response.statusCode == 200) {
-        print('registrado correctamente');
+        debugPrint('registrado correctamente');
         return true;
       } else {
-        print(response.body);
+        debugPrint(response.body);
         return false;
       }
     } catch (e) {
-      print('Error en la solicitud: $e');
+      debugPrint('Error en la solicitud: $e');
+
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -106,7 +110,9 @@ class TrakingService extends ChangeNotifier {
         return rastreos;
       }
     } catch (e) {
-      print('Error en la solicitud: $e');
+
+      debugPrint('Error en la solicitud: $e');
+
     }
   }
 
@@ -125,7 +131,8 @@ class TrakingService extends ChangeNotifier {
         throw Exception('Failed to load data!');
       }
     } catch (e) {
-      print('Error en la solicitud: $e');
+      debugPrint('Error en la solicitud: $e');
+
 
       if (context.mounted) {
         Navigator.of(context).pop();
@@ -156,7 +163,9 @@ class TrakingService extends ChangeNotifier {
         return false;
       }
     } catch (e) {
-      print('Error en la solicitud: $e');
+
+      debugPrint('Error en la solicitud: $e');
+
       if (context.mounted) {
         displayDialog(context, 'Error',
             'error al cambiar de transportista', Icons.error, Colors.red);

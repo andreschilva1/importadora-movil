@@ -121,17 +121,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                                   width:
                                       MediaQuery.of(context).size.width * 0.42,
                                   child: Text(
-                                    "Teléfono: ${almacen.telefono}",
-                                    style: const TextStyle(
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.42,
-                                  child: Text(
-                                    "País: ${almacen.pais}",
+                                    "País: ${almacen.pais.name}",
                                     style: const TextStyle(
                                       color: Colors.grey,
                                     ),
@@ -151,7 +141,11 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                                     children: <Widget>[
                                       ElevatedButton.icon(
                                           onPressed: () {
-                                            showAlertDialog(context, "Almacen", almacen.id);
+                                            showAlertDialog(context, (){
+                                              FocusScope.of(context).unfocus();
+                                              Provider.of<WarehouseService>(context, listen: false)
+                                                  .eliminar(context, almacen.id);
+                                            });
                                           },
                                           label: const Text('Eliminar'),
                                           icon: const Icon(Icons.delete),
@@ -166,7 +160,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                                     children: <Widget>[
                                       ElevatedButton.icon(
                                           onPressed: () {
-                                            showAlertDialog(context, "Almacen", almacen.id);
+                                            // showAlertDialog(context, "Almacen", almacen.id);
                                           },
                                           label: const Text('Editar'),
                                           icon: const Icon(Icons.edit),

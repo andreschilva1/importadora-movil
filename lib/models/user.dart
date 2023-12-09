@@ -9,6 +9,7 @@ class User {
     this.celular,
     this.foto,
     this.casillero,
+    this.almacen,
   });
 
   int? id;
@@ -18,6 +19,7 @@ class User {
   String? celular;
   String? foto;
   String? casillero;
+  String? almacen;
 
   factory User.fromJson(String str) => User.fromMap(json.decode(str));
 
@@ -31,6 +33,7 @@ class User {
         celular: json["celular"],
         foto: json["photo_path"],
         casillero: json["casillero"],
+        almacen: json["almacen"],
       );
 
   Map<String, dynamic> toMap() => {
@@ -41,6 +44,7 @@ class User {
         "celular": celular,
         "foto": foto,
         "casillero": casillero ?? '',
+        "almacen": almacen ?? '',
       };
 
   bool get isEmpty => id == 0 && name.isEmpty && email.isEmpty;

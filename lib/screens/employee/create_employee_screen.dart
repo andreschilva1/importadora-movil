@@ -12,16 +12,14 @@ class CreateEmployeeScreen extends StatefulWidget {
 }
 
 class _CreateEmployeeScreenState extends State<CreateEmployeeScreen> {
-  
   String? almacenId; 
-    @override
-    initState() {
-      super.initState();
-      Provider.of<WarehouseService>(context, listen: false).fetchWarehouses();
-      
-    }
-  
 
+  @override
+  initState() {
+    super.initState();
+    Provider.of<WarehouseService>(context, listen: false).fetchWarehouses();
+  }
+  
   @override
   Widget build(BuildContext context) {
     final formKey = GlobalKey<FormState>();
@@ -30,9 +28,6 @@ class _CreateEmployeeScreenState extends State<CreateEmployeeScreen> {
     TextEditingController password = TextEditingController();
     TextEditingController celular = TextEditingController();
     
-
-
-
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
@@ -51,7 +46,7 @@ class _CreateEmployeeScreenState extends State<CreateEmployeeScreen> {
       body: Consumer<WarehouseService>(
         builder: (context, warehouseService, child){
           if (warehouseService.almacenes!.isEmpty) {
-            return Center(child: const CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
           return SingleChildScrollView(
             child: Form(
@@ -138,8 +133,8 @@ class _CreateEmployeeScreenState extends State<CreateEmployeeScreen> {
                         const SizedBox(height: 30),
                         DropdownButtonFormField<String>(
                           decoration: InputDecorations.authInputDecoration(
-                            hintText: 'almacen',
-                            labelText: '',
+                            hintText: 'Almacén',
+                            labelText: 'Almacén del empleado',
                             prefixIcon: Icons.store,
                           ),
                           value: almacenId,
@@ -155,11 +150,11 @@ class _CreateEmployeeScreenState extends State<CreateEmployeeScreen> {
                             return null;
                           },
                           items: warehouseService.almacenes!.map((almacen) {
-                                    return DropdownMenuItem<String>(
-                                      value: almacen.id.toString(),
-                                      child: Text(almacen.name),
-                                    );
-                                  }).toList()
+                            return DropdownMenuItem<String>(
+                              value: almacen.id.toString(),
+                              child: Text(almacen.name),
+                            );
+                          }).toList()
                         ),
                         const SizedBox(height: 30),
                         Container(
@@ -181,7 +176,7 @@ class _CreateEmployeeScreenState extends State<CreateEmployeeScreen> {
                                   Provider.of<EmployeeService>(context,
                                           listen: false)
                                       .crearEmpleado(name.text, email.text,
-                                          password.text, celular.text,almacenId ?? '' ,context);
+                                          password.text, celular.text, almacenId! ,context);
                                 }
                               }),
                         ),

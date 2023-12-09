@@ -6,8 +6,6 @@ export 'package:projectsw2_movil/screens/envio/edit_envio_screen.dart';
 
 export 'package:projectsw2_movil/screens/envio/seguimiento_screen.dart';
 export 'package:projectsw2_movil/screens/rastreo/create_rastreo_screen.dart';
-
-export 'package:projectsw2_movil/screens/perfil_screen.dart';
 export 'package:projectsw2_movil/screens/check_screen.dart';
 export 'package:projectsw2_movil/screens/home_screen.dart';
 export 'package:projectsw2_movil/screens/login_screen.dart';
