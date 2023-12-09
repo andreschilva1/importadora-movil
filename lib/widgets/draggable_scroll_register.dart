@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projectsw2_movil/helpers/helpers.dart';
+import 'package:projectsw2_movil/services/notification_service.dart';
 import 'package:projectsw2_movil/services/services.dart';
 import 'package:projectsw2_movil/widgets/text_frave.dart';
 import 'package:provider/provider.dart';
@@ -75,10 +76,20 @@ class DraggableScrollRegister extends StatelessWidget {
               onPressed: () async {
                 if (formKey.currentState?.validate() ?? false) {
                   FocusScope.of(context).unfocus();
-                  authService.register(name.text.trim(), email.text.trim(),
-                      password.text.trim(), celular.text.trim());
+                  authService.register(
+                    name.text.trim(),
+                    email.text.trim(),
+                    password.text.trim(),
+                    celular.text.trim(),
+                  );
+                  NotificationService notificationService = NotificationService();
+                  final String tokenDevice = await notificationService.getFirebaseToken();
                   final succes = await authService.login(
-                      email.text.trim(), password.text.trim() , context);
+                    email.text.trim(),
+                    password.text.trim(),
+                    context,
+                    tokenDevice,
+                  );
                   if (succes) {
                     if (context.mounted) {
                       Navigator.pushReplacementNamed(context, 'home');

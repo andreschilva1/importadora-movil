@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projectsw2_movil/helpers/helpers.dart';
+import 'package:projectsw2_movil/services/notification_service.dart';
 import 'package:projectsw2_movil/services/services.dart';
 import 'package:projectsw2_movil/theme/app_theme.dart';
 import 'package:projectsw2_movil/widgets/widgets.dart';
@@ -20,12 +21,14 @@ class _LoginScreenState extends State<LoginScreen> {
   final FocusNode _passwordFocusNode = FocusNode();
   bool _isEmailFocused = false;
   bool _isPasswordFocused = false;
+  
 
   @override
   void initState() {
     super.initState();
     _emailFocusNode.addListener(_handleEmailFocusChange);
     _passwordFocusNode.addListener(_handlePasswordFocusChange);
+    
   }
 
   @override
@@ -52,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context);
-
+    
     return Scaffold(
       backgroundColor: AppTheme.primaryColor,
       body: Stack(
@@ -131,10 +134,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed:  () async {
                               if (_formKey.currentState?.validate() ?? false) {
                                 final email = _emailController.text.trim();
-                                final password =
-                                    _passwordController.text.trim();
-                                final succes =
-                                    await authService.login(email, password, context);
+                                final password = _passwordController.text.trim();
+                                NotificationService notificationService = NotificationService();
+                                final String tokenDevice  =  await notificationService.getFirebaseToken();
+                                final succes = await authService.login(email, password, context, tokenDevice);
                                 if (succes) {
                                   if (context.mounted) {
                                     Navigator.pushReplacementNamed(

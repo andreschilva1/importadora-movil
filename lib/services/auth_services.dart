@@ -19,7 +19,7 @@ class AuthService extends ChangeNotifier {
 
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
-  Future<bool> login(String email, String password, BuildContext context) async {
+  Future<bool> login(String email, String password, BuildContext context,String tokenDevice) async {
     logout();
     mostrarLoading(context, mensaje: 'Iniciando sesión...');
 
@@ -28,6 +28,7 @@ class AuthService extends ChangeNotifier {
     final response = await http.post(Uri.parse(url), body: {
       'email': email,
       'password': password,
+      'token_device': tokenDevice,
     });
 
     if (response.statusCode == 200) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projectsw2_movil/models/models.dart';
 import 'package:projectsw2_movil/screens/edit_profile_screen.dart';
+import 'package:projectsw2_movil/services/notification_service.dart';
 import 'package:projectsw2_movil/services/services.dart';
 import 'package:projectsw2_movil/widgets/widgets.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +10,8 @@ class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    NotificationService notificationService = NotificationService();
+
     final authService = Provider.of<AuthService>(context, listen: false);
 
     return Scaffold(
@@ -17,14 +20,16 @@ class HomeScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(
-              Icons.edit_note_outlined,
+              //Icons.edit_note_outlined,
+              Icons.settings,
               color: Colors.white,
             ),
-            onPressed: () {
-              Navigator.push(
+            onPressed: () async {
+              await notificationService.requestPermission();
+              /* Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const EditProfile()),
-              );
+              ); */
             },
           ),
         ],
