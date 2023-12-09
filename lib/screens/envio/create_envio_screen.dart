@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
-import 'package:projectsw2_movil/models/metodo_envio.dart';
+import 'package:projectsw2_movil/helpers/helpers.dart';
 import 'package:projectsw2_movil/services/envio_service.dart';
 import 'package:projectsw2_movil/services/metodo_envio_service.dart';
 import 'package:projectsw2_movil/widgets/card_container.dart';
@@ -12,23 +12,22 @@ import 'package:http/http.dart' as http;
 class CreateEnvioScreen extends StatefulWidget {
   final int paquete;
   final String peso;
-  const CreateEnvioScreen({Key? key, required this.peso, required this.paquete}) : super(key: key);
+  const CreateEnvioScreen({Key? key, required this.peso, required this.paquete})
+      : super(key: key);
 
   @override
   State<CreateEnvioScreen> createState() => _CreateEnvioScreenState();
 }
 
 class _CreateEnvioScreenState extends State<CreateEnvioScreen> {
-  List<DropdownMenuItem<int>> _menuItems = [];
-
-  List<MetodoEnvio> _metodo = [];
-  int _value = 1;
+  String? metodoId;
+  int total = 0;
 
   Map<String, dynamic>? paymentIntent;
 
-  void makePayment() async {
+  void makePayment(int total) async {
     try {
-      paymentIntent = await createPaymentIntent();
+      paymentIntent = await createPaymentIntent(total);
       var gpay = const PaymentSheetGooglePay(
         merchantCountryCode: "US",
         currencyCode: "US",
@@ -38,7 +37,7 @@ class _CreateEnvioScreenState extends State<CreateEnvioScreen> {
         paymentSheetParameters: SetupPaymentSheetParameters(
         paymentIntentClientSecret: paymentIntent!["client_secret"],
         style: ThemeMode.dark,
-        merchantDisplayName: "Sabir",
+        merchantDisplayName: "",
         googlePay: gpay,
       ));
 
@@ -51,16 +50,17 @@ class _CreateEnvioScreenState extends State<CreateEnvioScreen> {
   displayPaymentSheet() async {
     try {
       await Stripe.instance.presentPaymentSheet();
-      print("Done");
+      debugPrint("Done");
     } catch (e) {
-      print("Failde");
+      debugPrint("Failde");
     }
   }
 
-  createPaymentIntent() async {
+  createPaymentIntent(int total) async {
     try {
+
       Map<String, dynamic> body = {
-        "amount": "1000",
+        "amount": "${total}00",
         "currency": "USD",
       };
 
@@ -79,80 +79,92 @@ class _CreateEnvioScreenState extends State<CreateEnvioScreen> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final metodo = Provider.of<MetodoEnvioService>(context);
-
-    if (_metodo.isEmpty) {
-      metodo.fetchMetodoEnvios();
-
-      setState(() {
-        _metodo = metodo.metodoEnvios!;
-
-        _menuItems = List.generate(
-          _metodo.length,
-          (i) => DropdownMenuItem(
-            value: _metodo[i].id,
-            child: Text(
-                "${_metodo[i].transportista} - Costo: ${_metodo[i].costoKg} bs por ${_metodo[i].metodo}"),
-          ),
-        );
-      });
-    }
+  initState() {
+    super.initState();
+    Provider.of<MetodoEnvioService>(context, listen: false).fetchMetodoEnvios();
   }
 
   @override
   Widget build(BuildContext context) {
+    final formKey = GlobalKey<FormState>();
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CardContainer(
+      body: Consumer<MetodoEnvioService>(
+          builder: (context, metodoService, child) {
+        if (metodoService.metodoEnvios!.isEmpty) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        return SingleChildScrollView(
+          child: Form(
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            key: formKey,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
-                  'Método del envío',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                CardContainer(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      DropdownButtonFormField<String>(
+                          decoration: InputDecorations.authInputDecoration(
+                            hintText: 'Método',
+                            labelText: 'Método de Envío',
+                            prefixIcon: Icons.rule,
+                          ),
+                          value: metodoId,
+                          onChanged: (value) {
+                            setState(() {
+                              metodoId = value;
+                              total = int.parse(metodoService.metodoEnvios![int.parse(metodoId!) - 1].costoKg) * int.parse(widget.peso);
+                            });
+                          },
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Debe elegir un método';
+                            }
+                            return null;
+                          },
+                          items: metodoService.metodoEnvios!.map((metodo) {
+                            return DropdownMenuItem<String>(
+                              value: metodo.id.toString(),
+                              child: Text(
+                                  "${metodo.transportista}- Costo: ${int.parse(metodo.costoKg) * int.parse(widget.peso)}bs por ${metodo.metodo}"),
+                            );
+                          }).toList()),
+                      const SizedBox(height: 30),
+                      Container(
+                        alignment: Alignment.center,
+                        child: MaterialButton(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            disabledColor: Colors.grey,
+                            elevation: 0,
+                            color: Colors.black,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 70, vertical: 15),
+                              child: const Text('Crear',
+                                  style: TextStyle(color: Colors.white))),
+                            onPressed: () {
+                              if (formKey.currentState!.validate()) {
+                                FocusScope.of(context).unfocus();
+                                Provider.of<EnvioService>(context,
+                                        listen: false)
+                                    .createEnvio(
+                                        widget.paquete, metodoId!, context);
+                                // makePayment(total);
+                              }
+                            }),
+                      ),
+                    ],
                   ),
                 ),
-                DropdownButton<int>(
-                  isExpanded: true,
-                  items: _menuItems,
-                  value: _value,
-                  onChanged: (value) => setState(() {
-                    _value = value!;
-                  }),
-                ),
-                const SizedBox(height: 30),
-                Container(
-                  alignment: Alignment.center,
-                  child: MaterialButton(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      disabledColor: Colors.grey,
-                      elevation: 0,
-                      color: Colors.black,
-                      child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 70, vertical: 15),
-                          child: const Text('Crear',
-                              style: TextStyle(color: Colors.white))),
-                      onPressed: () {
-                        Provider.of<EnvioService>(context, listen: false).createEnvio(widget.paquete, _value, context);
-                        makePayment();
-                      }),
-                ),
+                const SizedBox(height: 50),
               ],
             ),
           ),
-          const SizedBox(height: 50),
-        ],
-      ),
+        );
+      }),
     );
   }
 }

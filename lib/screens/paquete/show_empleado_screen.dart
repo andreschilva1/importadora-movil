@@ -1,17 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:projectsw2_movil/models/empleado.dart';
+import 'package:projectsw2_movil/models/models.dart';
 import 'package:projectsw2_movil/services/services.dart';
 import 'package:provider/provider.dart';
 
 class ShowEmpleado extends StatefulWidget {
   final int empleado;
-  const ShowEmpleado({super.key, required this.empleado});
+  const ShowEmpleado({Key? key, required this.empleado}) : super(key: key);
 
   @override
   State<ShowEmpleado> createState() => _ShowEmpleadoState();
 }
 
 class _ShowEmpleadoState extends State<ShowEmpleado> {
+  Future<User?>? _futureEmpleado;
+  @override
+  initState() {
+    super.initState();
+    _futureEmpleado = _loadEmployee();
+  }
+
+  Future<User?> _loadEmployee() async {
+    return Provider.of<EmployeeService>(context, listen: false).getEmployee(widget.empleado);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,13 +30,19 @@ class _ShowEmpleadoState extends State<ShowEmpleado> {
         title: const Text("Usuario", style: TextStyle(color: Colors.white)),
         elevation: 0,
       ),
-      body: SingleChildScrollView(
-        child: FutureBuilder<Empleado?>(
-          future: Provider.of<EmployeeService>(context).getEmployee(widget.empleado),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              final empleado = snapshot.data;
-              return Column(
+      body: FutureBuilder<User?>(
+        future: _futureEmpleado,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return const Center(child: Text('Error al cargar los datos'));
+          } else if (!snapshot.hasData || snapshot.data == null) {
+            return const Center(child: Text('No se encontraron datos'));
+          } else {
+            User empleado = snapshot.data!;
+            return SingleChildScrollView(
+              child: Column(
                 children: [
                   const SizedBox(
                     height: 20,
@@ -59,7 +75,7 @@ class _ShowEmpleadoState extends State<ShowEmpleado> {
                   Padding(
                     padding: const EdgeInsets.all(10),
                     child: Text(
-                      empleado!.name,
+                      empleado.name,
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 25,
@@ -69,7 +85,6 @@ class _ShowEmpleadoState extends State<ShowEmpleado> {
                   Padding(
                     padding: const EdgeInsets.all(15),
                     child: Container(
-                      height: 300,
                       width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
                         color: Colors.black,
@@ -80,48 +95,66 @@ class _ShowEmpleadoState extends State<ShowEmpleado> {
                           ListTile(
                             title: const Text(
                               "Email",
-                              style: TextStyle(color: Colors.grey, fontSize: 14),
+                              style:
+                                  TextStyle(color: Colors.grey, fontSize: 14),
                             ),
                             subtitle: Text(
                               empleado.email,
-                              style: const TextStyle(color: Colors.white, fontSize: 18),
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 18),
                             ),
                           ),
                           const Divider(color: Colors.grey),
                           ListTile(
                             title: const Text(
                               "Teléfono",
-                              style: TextStyle(color: Colors.grey, fontSize: 14),
+                              style:
+                                  TextStyle(color: Colors.grey, fontSize: 14),
                             ),
                             subtitle: Text(
-                              empleado.celular,
-                              style: const TextStyle(color: Colors.white, fontSize: 18),
+                              empleado.celular!,
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 18),
                             ),
                           ),
                           const Divider(color: Colors.grey),
                           const ListTile(
                             title: Text(
                               "Rol",
-                              style: TextStyle(color: Colors.grey, fontSize: 14),
+                              style:
+                                  TextStyle(color: Colors.grey, fontSize: 14),
                             ),
                             subtitle: Text(
                               "Empleado",
-                              style: TextStyle(color: Colors.white, fontSize: 18),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 18),
                             ),
                           ),
                           const Divider(color: Colors.grey),
-                          
+                          empleado.almacen!.isNotEmpty
+                          ? ListTile(
+                            title: const Text(
+                              "Almacén",
+                              style:
+                                  TextStyle(color: Colors.grey, fontSize: 14),
+                            ),
+                            subtitle: Text(
+                              empleado.almacen!,
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 18),
+                            ),
+                          )
+                          : Container(),
+                          const Divider(color: Colors.grey),
                         ],
                       ),
                     ),
                   )
                 ],
-              );
-            } else {
-            return const Center(child: CircularProgressIndicator());
+              ),
+            );
           }
         },
-        ),
       ),
     );
   }

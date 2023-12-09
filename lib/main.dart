@@ -6,6 +6,7 @@ import 'package:projectsw2_movil/screens/paquete/paquete_screen.dart';
 import 'package:projectsw2_movil/services/envio_service.dart';
 import 'package:projectsw2_movil/services/estado_envio_service.dart';
 import 'package:projectsw2_movil/services/notification_service.dart';
+import 'package:projectsw2_movil/services/pais_services.dart';
 import 'package:projectsw2_movil/services/services.dart';
 import 'package:projectsw2_movil/theme/app_theme.dart';
 import 'package:provider/provider.dart';
@@ -49,6 +50,7 @@ class AppState extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => MetodoEnvioService()),
         ChangeNotifierProvider(create: (_) => PaqueteService()),
         ChangeNotifierProvider(create: (_) => EnvioService()),
+        ChangeNotifierProvider(create: (_) => PaisService()),
         ChangeNotifierProvider(create: (_) => EstadoEnvioService()),
         ChangeNotifierProvider(create: (_) => TrakingService()),
       ],

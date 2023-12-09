@@ -82,12 +82,11 @@ class EnvioScreen extends StatelessWidget {
                                     icon: Icons.source,
                                     color: Colors.blueAccent[400]!,
                                     text: "Informacion de Rastreo",
-                                    subText:
-                                        snapshot.data!.codigoRastreo == null
+                                    subText:snapshot.data!.codigoRastreo == null
                                             ? "Codigo no registrado"
                                             : snapshot.data!.codigoRastreo!,
-                                    child: TextButton(
-                                      onPressed: () {
+                                    child: InkWell(
+                                      onTap: () {
                                         if (snapshot.data!.codigoRastreo == null) {
                                           showBottomAlert(
                                               context: context,
@@ -104,10 +103,6 @@ class EnvioScreen extends StatelessWidget {
                                             )
                                         );
                                       },
-                                      style: TextButton.styleFrom(
-                                        backgroundColor: Colors.transparent,
-                                        shadowColor: Colors.transparent,
-                                      ),
                                       child: Icon(Icons.visibility_outlined,
                                           color: Colors.blueAccent.shade700,
                                           size: 30),
@@ -120,7 +115,7 @@ class EnvioScreen extends StatelessWidget {
                                     icon: Icons.money_off,
                                     color: Colors.yellowAccent[400]!,
                                     text: "Costo",
-                                    subText: snapshot.data!.costo,
+                                    subText: "${snapshot.data!.costo} Bs",
                                   ),
                                   const SizedBox(
                                     height: 20.0,
@@ -178,10 +173,9 @@ class EnvioScreen extends StatelessWidget {
                                                       )),
                                             );
                                           },
-                                          child: Container(
-                                              child: const Text('Actualizar',
-                                                  style: TextStyle(
-                                                      color: Colors.white))))
+                                          child: const Text('Actualizar',
+                                              style: TextStyle(
+                                                  color: Colors.white)))
                                       : const SizedBox(),
                                 ],
                               ),

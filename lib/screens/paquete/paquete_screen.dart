@@ -1,6 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:projectsw2_movil/models/paquete.dart';
+import 'package:projectsw2_movil/screens/paquete/create_consolidate_screen.dart';
+import 'package:projectsw2_movil/screens/paquete/edit_consolidate_screen.dart';
+import 'package:projectsw2_movil/screens/paquete/registrar_consolidate_screen.dart';
 import 'package:projectsw2_movil/screens/screens.dart';
 import 'package:projectsw2_movil/services/services.dart';
 import 'package:projectsw2_movil/widgets/widgets.dart';
@@ -30,7 +33,8 @@ class _PaqueteScreenState extends State<PaqueteScreen> {
       drawer: const SidebarDrawer(),
       appBar: AppBar(
         actions: [
-          IconButton(
+          user!.rol != "Cliente" 
+          ? IconButton(
             icon: const Icon(
               Icons.playlist_add_outlined,
               color: Colors.white,
@@ -40,6 +44,19 @@ class _PaqueteScreenState extends State<PaqueteScreen> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => const CreatePaqueteScreen()),
+              );
+            },
+          )
+          : IconButton(
+            icon: const Icon(
+              Icons.inventory,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const CreateConsolidateScreen()),
               );
             },
           ),
@@ -77,12 +94,14 @@ class _PaqueteScreenState extends State<PaqueteScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Expanded(
-                          child: Row(children: [
-                            InkWell(
+                          child: Row(
+                            children: [
+                            paquete.photoPath != null
+                            ? InkWell(
                               onTap: () async {
                                 File file = await DefaultCacheManager()
-                                    .getSingleFile(paquete.photoPath);
-                                if (mounted) {   
+                                    .getSingleFile(paquete.photoPath!);
+                                if (mounted) {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -100,32 +119,81 @@ class _PaqueteScreenState extends State<PaqueteScreen> {
                                     borderRadius: BorderRadius.circular(20),
                                     child: FadeInImage(
                                       placeholder:
-                                          const AssetImage('Assets/caja.gif'),
-                                      image: NetworkImage(paquete.photoPath),
+                                          const AssetImage('Assets/paquete.jpg'),
+                                      image: NetworkImage(paquete.photoPath!),
                                       fit: BoxFit.cover,
                                     )),
                               ),
-                            ),
-                            const SizedBox(width: 10),
+                            )
+                            : const SizedBox(width: 10,),
                             Flexible(
                               child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(paquete.codigo_rastreo,
-                                        style: const TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w500)),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                    Text("Peso: ${paquete.peso} kg",
-                                        style:
-                                            TextStyle(color: Colors.grey[500])),
-                                  ]),
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  paquete.codigo_rastreo != null
+                                  ? Text("Código de rastreo: ${paquete.codigo_rastreo}",
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w500), 
+                                      softWrap: true,)
+                                  : const SizedBox(),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text("Peso: ${paquete.peso} kg",
+                                    style:
+                                        TextStyle(color: Colors.grey[500])),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text(paquete.consolidacion_estado_id == 2
+                                    ? "Estado: Terminado"
+                                    : "Estado: En Consolidación",
+                                    style:
+                                        TextStyle(color: Colors.grey[500])),
+                                ]),
                             )
                           ]),
                         ),
+                        paquete.consolidacion_estado_id == 1
+                        ? user.rol == "Cliente"
+                          ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              InkWellParameters(
+                                text: "Consolidación",
+                                ancho: 0.30,
+                                color: Colors.orange,
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => EditConsolidateScreen(
+                                          paqueteId: paquete.id,
+                                          almacen: paquete.almacen_id)),
+                                  );
+                                }),
+                            ]
+                          )
+                          : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              InkWellParameters(
+                                text: "Registrar",
+                                ancho: 0.30,
+                                color: Colors.orange,
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => RegistrarConsolidateScreen(
+                                          paquete: paquete)),
+                                  );
+                                }),
+                            ]
+                          )
+                        : const SizedBox(),
                       ],
                     ),
                     const SizedBox(
@@ -137,6 +205,7 @@ class _PaqueteScreenState extends State<PaqueteScreen> {
                       children: [
                         InkWellParameters(
                             text: "Ver almacén",
+                            ancho: 0.25,
                             color: Colors.green,
                             onTap: () {
                               Navigator.push(
@@ -149,34 +218,40 @@ class _PaqueteScreenState extends State<PaqueteScreen> {
                         const SizedBox(
                           width: 7,
                         ),
-                        user!.rol == "Cliente"
-                            ? InkWellParameters(
-                                text: "Empleado",
-                                color: Colors.lightBlue,
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => ShowEmpleado(
-                                            empleado: paquete.empleado_id)),
-                                  );
-                                })
-                            : InkWellParameters(
-                                text: "Cliente",
-                                color: Colors.lightBlue,
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => ShowCliente(
-                                            empleado: paquete.cliente_id)),
-                                  );
-                                }),
+                        user.rol != "Cliente"
+                          ? InkWellParameters(
+                              text: "Cliente",
+                              ancho: 0.25,
+                              color: Colors.lightBlue,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ShowCliente(
+                                          empleado: paquete.cliente_id)),
+                                );
+                              })
+                          : paquete.empleado_id != null
+                          ? InkWellParameters(
+                              text: "Empleado",
+                              ancho: 0.25,
+                              color: Colors.lightBlue,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ShowEmpleado(
+                                          empleado: paquete.empleado_id!)),
+                                );
+                              })
+                          : const SizedBox(),
                         const SizedBox(
                           width: 7,
                         ),
-                        InkWellParameters(
-                            text: "Envío",
+                        paquete.consolidacion_estado_id == 2
+                        ? InkWellParameters(
+                            text: "Ver Envío",
+                            ancho: 0.25,
                             color: const Color.fromARGB(255, 244, 3, 152),
                             onTap: () {
                               Navigator.push(
@@ -186,7 +261,8 @@ class _PaqueteScreenState extends State<PaqueteScreen> {
                                         paquete: paquete.id,
                                         peso: paquete.peso)),
                               );
-                            }),
+                            })
+                        : const SizedBox(),
                       ],
                     )
                   ],
@@ -205,11 +281,13 @@ class InkWellParameters extends StatelessWidget {
     super.key,
     required this.text,
     required this.color,
+    required this.ancho,
     required this.onTap,
   });
 
   final String text;
   final Color color;
+  final double ancho;
   final void Function()? onTap;
 
   @override
@@ -218,8 +296,7 @@ class InkWellParameters extends StatelessWidget {
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-        // ancho máximo del 15% del ancho total de la pantalla
-        width: MediaQuery.of(context).size.width * 0.25,
+        width: MediaQuery.of(context).size.width * ancho,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           color: color,
@@ -229,6 +306,7 @@ class InkWellParameters extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(color: Colors.white),
+          textAlign: TextAlign.center,
         ),
       ),
     );

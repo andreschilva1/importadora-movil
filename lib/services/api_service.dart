@@ -5,6 +5,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 class ApiService {
   //static const String _baseUrl = 'http://3.86.65.163:80';
   static const String _baseUrl = 'http://192.168.0.110:8000';
+  //static const String _baseUrl = 'http://192.168.0.9:8000';
+
 
   static String get baseUrl {
     return _baseUrl;
@@ -24,7 +26,6 @@ class ApiService {
   Future<http.Response> post(String path, Map<String, dynamic> body) async {
     final token = await _storage.read(key: 'token');
     final url = '$baseUrl/$path';
-    print(token);
     final response = await http.post(Uri.parse(url),
         headers: {
           "Content-Type": "aplication/json",

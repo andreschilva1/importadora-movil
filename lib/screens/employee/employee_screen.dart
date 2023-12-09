@@ -125,7 +125,6 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                     style: const TextStyle(
                                       color: Colors.grey,
                                       fontSize: 15.0,
-                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),
@@ -137,7 +136,6 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                     style: const TextStyle(
                                       color: Colors.grey,
                                       fontSize: 15.0,
-                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),
@@ -156,8 +154,11 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                     children: <Widget>[
                                       ElevatedButton.icon(
                                           onPressed: () {
-                                            showAlertDialog(
-                                                context, "Empleado", empleado.id);
+                                            showAlertDialog(context, (){
+                                              FocusScope.of(context).unfocus();
+                                              Provider.of<EmployeeService>(context, listen: false)
+                                                  .eliminar(context, empleado.id);
+                                            });
                                           },
                                           label: const Text('Eliminar'),
                                           icon: const Icon(Icons.delete),
@@ -174,8 +175,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                     children: <Widget>[
                                       ElevatedButton.icon(
                                           onPressed: () {
-                                            showAlertDialog(
-                                                context, "Empleado", empleado.id);
+                                            // showAlertDialog(context, "Empleado", empleado.id);
                                           },
                                           label: const Text('Editar'),
                                           icon: const Icon(Icons.edit),

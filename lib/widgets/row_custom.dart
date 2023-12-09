@@ -32,7 +32,8 @@ class RowCustom extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
+            SizedBox(
+
               width: MediaQuery.of(context).size.width * 0.40,
               child: Text(
                 text,
@@ -43,7 +44,8 @@ class RowCustom extends StatelessWidget {
                 ),
               ),
             ),
-            Container(
+            SizedBox(
+
               width: MediaQuery.of(context).size.width * 0.40,
               child: Text(
                 subText,
@@ -57,11 +59,10 @@ class RowCustom extends StatelessWidget {
             )
           ],
         ),
-        Column(
-          children: [
-            child ?? const SizedBox(),
-          ],
-        )
+        child != null
+        ? Expanded(child: child!)
+        : const SizedBox(),
+
       ],
     );
   }

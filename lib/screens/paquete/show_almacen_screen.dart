@@ -25,7 +25,7 @@ class _ShowAlmacenState extends State<ShowAlmacen> {
           future: Provider.of<WarehouseService>(context).getAlmacen(widget.almacen),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              final almacen = snapshot.data;
+              Almacen almacen = snapshot.data!;
               return Column(
                 children: [
                   const SizedBox(
@@ -57,16 +57,6 @@ class _ShowAlmacenState extends State<ShowAlmacen> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Text(
-                      almacen!.name,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 25,
-                      ),
-                    ),
-                  ),
-                  Padding(
                     padding: const EdgeInsets.all(15),
                     child: Container(
                       height: 300,
@@ -77,6 +67,17 @@ class _ShowAlmacenState extends State<ShowAlmacen> {
                       ),
                       child: Column(
                         children: [
+                          ListTile(
+                            title: const Text(
+                              "Nombre",
+                              style: TextStyle(color: Colors.grey, fontSize: 14),
+                            ),
+                            subtitle: Text(
+                              almacen.name,
+                              style: const TextStyle(color: Colors.white, fontSize: 18),
+                            ),
+                          ),
+                          const Divider(color: Colors.grey),
                           ListTile(
                             title: const Text(
                               "Dirección",
@@ -90,22 +91,11 @@ class _ShowAlmacenState extends State<ShowAlmacen> {
                           const Divider(color: Colors.grey),
                           ListTile(
                             title: const Text(
-                              "Teléfono",
-                              style: TextStyle(color: Colors.grey, fontSize: 14),
-                            ),
-                            subtitle: Text(
-                              almacen.telefono,
-                              style: const TextStyle(color: Colors.white, fontSize: 18),
-                            ),
-                          ),
-                          const Divider(color: Colors.grey),
-                          ListTile(
-                            title: const Text(
                               "País",
                               style: TextStyle(color: Colors.grey, fontSize: 14),
                             ),
                             subtitle: Text(
-                              almacen.pais,
+                              almacen.pais.name,
                               style: const TextStyle(color: Colors.white, fontSize: 18),
                             ),
                           ),

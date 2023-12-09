@@ -58,7 +58,7 @@ class WarehouseService extends ChangeNotifier {
     }
   }
 
-  Future<void> crearAlmacen(String name, String direccion, String telefono, String pais,
+  Future<void> crearAlmacen(String name, String direccion, String pais,
       BuildContext context) async {
     mostrarLoading(context);
     final token = await _storage.read(key: 'token');
@@ -73,8 +73,7 @@ class WarehouseService extends ChangeNotifier {
       body: jsonEncode({
         'name': name,
         'direccion': direccion,
-        'telefono': telefono,
-        'pais': pais,
+        'pais_id': pais,
       }),
     );
 

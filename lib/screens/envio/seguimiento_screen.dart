@@ -13,8 +13,7 @@ class SeguimientoScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<TrakingService>(context, listen: false)
-        .fetchSeguimientos(numeroRastreo, context);
+    Provider.of<TrakingService>(context, listen: false).fetchSeguimientos(numeroRastreo, context);
     return Scaffold(
       appBar: AppBar(
         title: const Center(child: Text('Informacion de Seguimiento')),

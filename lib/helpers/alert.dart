@@ -10,9 +10,9 @@ mostrarLoading(BuildContext context, {String? mensaje}) {
       context: context,
       barrierDismissible: false,
       builder: (_) => AlertDialog(
-            title: Text((mensaje != null) ? mensaje : ''),
-            content: const LinearProgressIndicator(),
-          ));
+        title: Text((mensaje != null) ? mensaje : 'En Progreso'),
+        content: const LinearProgressIndicator(),
+      ));
 }
 
 mostrarAlerta(BuildContext context, String titulo, String mensaje) {
@@ -32,7 +32,7 @@ mostrarAlerta(BuildContext context, String titulo, String mensaje) {
           ));
 }
 
-showAlertDialog(BuildContext context, String text, int id) async {
+showAlertDialog(BuildContext context, void Function() onPressed) async {
   Widget cancelButton = TextButton(
     child: const Text("Cancel"),
     onPressed: () {
@@ -41,20 +41,8 @@ showAlertDialog(BuildContext context, String text, int id) async {
   );
 
   Widget continueButton = TextButton(
+    onPressed: onPressed,
     child: const Text("Eliminar"),
-    onPressed: () {
-      FocusScope.of(context).unfocus();
-      if (text == "Almacen") {
-        Provider.of<WarehouseService>(context, listen: false)
-            .eliminar(context, id);
-      } else if (text == "Método de Envío") {
-        Provider.of<MetodoEnvioService>(context, listen: false)
-            .eliminar(context, id);
-      } else {
-        Provider.of<EmployeeService>(context, listen: false)
-            .eliminar(context, id);
-      }
-    },
   );
 
   // set up the AlertDialog
