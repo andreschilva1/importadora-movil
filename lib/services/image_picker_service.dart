@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 final picker = ImagePicker();
@@ -13,7 +14,7 @@ Future<File?> pickImageFromGallery() async {
       return null;
     }
   } catch (error) {
-    print('Error al seleccionar la imagen: $error');
+    debugPrint('Error al seleccionar la imagen: $error');
     throw 'error ocurrido en ImagePickerService: $error';
   }
 }
@@ -29,7 +30,7 @@ Future<File?> pickImageFromCamera() async {
     }   
 
   } catch (error) {
-    print('Error al tomar la imagen: $error');
+    debugPrint('Error al tomar la imagen: $error');
     throw 'error ocurrido en pickImageFromCamera: $error';
   }
 }

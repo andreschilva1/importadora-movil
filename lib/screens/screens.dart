@@ -1,5 +1,9 @@
 
 
+export 'package:projectsw2_movil/screens/metodoEnvio/metodo_envio_screen.dart';
+
+export 'package:projectsw2_movil/screens/employee/employee_screen.dart';
+
 export 'package:projectsw2_movil/screens/envio/envio_screen.dart';
 export 'package:projectsw2_movil/screens/envio/create_envio_screen.dart';
 export 'package:projectsw2_movil/screens/envio/edit_envio_screen.dart';

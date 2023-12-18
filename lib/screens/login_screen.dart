@@ -1,6 +1,6 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:projectsw2_movil/helpers/helpers.dart';
-import 'package:projectsw2_movil/services/notification_service.dart';
 import 'package:projectsw2_movil/services/services.dart';
 import 'package:projectsw2_movil/theme/app_theme.dart';
 import 'package:projectsw2_movil/widgets/widgets.dart';
@@ -21,14 +21,12 @@ class _LoginScreenState extends State<LoginScreen> {
   final FocusNode _passwordFocusNode = FocusNode();
   bool _isEmailFocused = false;
   bool _isPasswordFocused = false;
-  
 
   @override
   void initState() {
     super.initState();
     _emailFocusNode.addListener(_handleEmailFocusChange);
     _passwordFocusNode.addListener(_handlePasswordFocusChange);
-    
   }
 
   @override
@@ -55,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context);
-    
+
     return Scaffold(
       backgroundColor: AppTheme.primaryColor,
       body: Stack(
@@ -131,31 +129,36 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: TextButton.styleFrom(
                         backgroundColor: const Color.fromRGBO(211, 55, 69, 1),
                       ),
-                      onPressed:  () async {
-                              if (_formKey.currentState?.validate() ?? false) {
-                                final email = _emailController.text.trim();
-                                final password = _passwordController.text.trim();
-                                NotificationService notificationService = NotificationService();
-                                final String tokenDevice  =  await notificationService.getFirebaseToken();
-                                final succes = await authService.login(email, password, context, tokenDevice);
-                                if (succes) {
-                                  if (context.mounted) {
-                                    Navigator.pushReplacementNamed(
-                                        context, 'home');
-                                  }
-                                } else {
-                                  if (context.mounted) {
-                                    displayDialog(
-                                        context,
-                                        'Error de inicio de Sesion',
-                                        'Email o contraseña incorrectos',
-                                        Icons.error,
-                                        Colors.red);
-                                  }
-                                }
-                              }
-                            },
-                      child:const  TextFrave(
+                      onPressed: () async {
+                        if (_formKey.currentState?.validate() ?? false) {
+                          final email = _emailController.text.trim();
+                          final password = _passwordController.text.trim();
+                          FirebaseMessaging firebase =
+                              FirebaseMessaging.instance;
+                          final String? tokenDevice = await firebase.getToken();
+                          final succes = await authService.login(
+                            email,
+                            password,
+                            context,
+                            tokenDevice!,
+                          );
+                          if (succes) {
+                            if (context.mounted) {
+                              Navigator.pushReplacementNamed(context, 'home');
+                            }
+                          } else {
+                            if (context.mounted) {
+                              displayDialog(
+                                  context,
+                                  'Error de inicio de Sesion',
+                                  'Email o contraseña incorrectos',
+                                  Icons.error,
+                                  Colors.red);
+                            }
+                          }
+                        }
+                      },
+                      child: const TextFrave(
                           text: 'Iniciar Sesión',
                           fontSize: 22,
                           color: Colors.white,
@@ -167,7 +170,8 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
           DraggableScrollableSheet(
-            initialChildSize: _isEmailFocused || _isPasswordFocused ? 0.0 : 0.16,
+            initialChildSize:
+                _isEmailFocused || _isPasswordFocused ? 0.0 : 0.16,
             minChildSize: _isEmailFocused || _isPasswordFocused ? 0.0 : 0.16,
             maxChildSize: _isEmailFocused || _isPasswordFocused ? 0.0 : 0.85,
             builder: (_, s) => DraggableScrollRegister(scrollController: s),

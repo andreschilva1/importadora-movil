@@ -85,7 +85,7 @@ class EnvioService extends ChangeNotifier {
       body: jsonEncode({
         'id': id,
         'codigo_rastreo': codigo,
-        'envio_estado_id': 2,
+        'envio_estado_id': estado,
       }),
     );
 

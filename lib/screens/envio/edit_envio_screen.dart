@@ -98,12 +98,12 @@ class _EditEnvioScreenState extends State<EditEnvioScreen> {
                       prefixIcon: Icons.send,
                     ),
                     onChanged: (value) => value,
-                    validator: (value) {
+                    /* validator: (value) {
                       if (value!.isEmpty) {
                         return 'Ingrese el codigo';
                       }
                       return null;
-                    },
+                    }, */
                     controller: codigo,
                   ),
                   const SizedBox(height: 30),
@@ -115,7 +115,7 @@ class _EditEnvioScreenState extends State<EditEnvioScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  DropdownButton<int>(
+                  DropdownButtonFormField<int>(
                     isExpanded: true,
                     items: _menuItems,
                     value: widget.metodo,

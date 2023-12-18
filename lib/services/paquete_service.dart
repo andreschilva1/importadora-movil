@@ -10,21 +10,36 @@ import 'package:projectsw2_movil/models/paquete.dart';
 import 'package:projectsw2_movil/services/api_service.dart';
 
 class PaqueteService extends ChangeNotifier {
-  List<Paquete>? _paquetes = [];
+  List<Paquete>? _paquetesSinEnviar = [];
+  List<Paquete>? _paquetesConsolidados = [];
+  List<Paquete>? _paquetesEnviados = [];
 
-  List<Paquete>? get paquetes => _paquetes;
+  List<Paquete>? get paquetesSinEnviar => _paquetesSinEnviar;
+  List<Paquete>? get paquetesConsolidados => _paquetesConsolidados;
+  List<Paquete>? get paquetesEnviados => _paquetesEnviados;
 
   ApiService apiService = ApiService();
   static final String _baseUrl = ApiService.baseUrl;
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
+  
   bool isLoading = false;
 
   Future<void> fetchPaquetes() async {
-    _paquetes = await getPaquetes();
+    final rol = await _storage.read(key: 'rol');
+
+    _paquetesSinEnviar = await getPaquetesSinEnviar();
+    
+    if (rol != 'Encargado de Envio') {
+      _paquetesConsolidados = await getPaquetesConsolidados(); 
+    }
+    
+    if (rol != 'Encargado de Almacen') {
+      _paquetesEnviados = await getPaquetesEnviados();
+    }
     notifyListeners();
   }
 
-  Future<List<Paquete>> getPaquetes() async {
+  Future<List<Paquete>> getPaquetesSinEnviar() async {
     final token = await _storage.read(key: 'token');
     final url = Uri.parse('$_baseUrl/api/obtenerPaquetes');
     final response = await http.get(url, headers: {
@@ -73,8 +88,8 @@ class PaqueteService extends ChangeNotifier {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token'
     };
-    final request =
-        http.Request('GET', Uri.parse('$_baseUrl/api/obtenerPaquetesConsolidacion'));
+    final request = http.Request(
+        'GET', Uri.parse('$_baseUrl/api/obtenerPaquetesConsolidacion'));
     request.body = json.encode({"paqueteId": paqueteId});
     request.headers.addAll(headers);
 
@@ -92,9 +107,31 @@ class PaqueteService extends ChangeNotifier {
     }
   }
 
-  Future obtenerDatosDeImagen(
+  Future<List<Paquete>> getPaquetesConsolidados() async {
+    final response = await apiService.get('api/obtenerPaquetesConsolidados');
+    if (200 == response.statusCode) {
+      final body = jsonDecode(response.body);
+      final List<Paquete> paquetes =paqueteFromJson(jsonEncode(body['data']));
+      return paquetes;
+    } else {
+      return List.empty();
+    }
+  }
+
+  Future<List<Paquete>> getPaquetesEnviados() async {
+    final response = await apiService.get('api/obtenerPaquetesEnviados');
+    if (200 == response.statusCode) {
+      final body = jsonDecode(response.body);
+      final List<Paquete> paquetes =paqueteFromJson(jsonEncode(body['data']));
+      return paquetes;
+    } else {
+      return List.empty();
+    }
+  }
+
+  Future subirImagen(
       {required File imageFile, required BuildContext context}) async {
-    mostrarLoading(context, mensaje: 'Analizando imagen...');
+    mostrarLoading(context, mensaje: 'Subiendo Imagen...');
 
     String? token = await _storage.read(key: 'token');
     if (token == null) {
@@ -109,7 +146,7 @@ class PaqueteService extends ChangeNotifier {
 
     var request = http.MultipartRequest(
       'POST',
-      Uri.parse('$_baseUrl/api/reconocerPaquete'), // Cambia a tu URL
+      Uri.parse('$_baseUrl/api/guardarimagenPaquete'), // Cambia a tu URL
     );
 
     request.headers.addAll(headers);
@@ -120,12 +157,36 @@ class PaqueteService extends ChangeNotifier {
       var response = await request.send();
       if (response.statusCode == 200) {
         var jsonResponse = await response.stream.bytesToString();
-        var codigoYcasillero = json.decode(jsonResponse);
-        debugPrint(codigoYcasillero);
+        var imagenUrl = json.decode(jsonResponse);
+        debugPrint(imagenUrl);
+        return imagenUrl;
+      } else {
+        debugPrint(
+            'error al subir la imagen. Código de estado: ${response.statusCode}');
+      }
+    } catch (e) {
+      debugPrint('Error en la solicitud: $e');
+    } finally {
+      Navigator.of(context).pop();
+    }
+  }
+
+  Future obtenerDatosDeImagen(
+      {required String imageUrl, required BuildContext context}) async {
+    try {
+      mostrarLoading(context, mensaje: 'Analizando imagen...');
+
+      final response = await apiService.post('api/reconocerPaquete', {
+        'imege_url': imageUrl,
+      });
+
+      if (response.statusCode == 200) {
+        var codigoYcasillero = json.decode(response.body);
+        //debugPrint(codigoYcasillero);
         return codigoYcasillero;
       } else {
         debugPrint(
-            'Error en la respuesta en obtenerDatosDeImagen(). Código de estado: ${response.statusCode}');
+            'Error en la respuesta en obtenerDatosDeImagen. Código de estado: ${response.statusCode}');
       }
     } catch (e) {
       debugPrint('Error en la solicitud: $e');
@@ -248,15 +309,15 @@ class PaqueteService extends ChangeNotifier {
     }
   }
 
-  Future<List<Paquete>> getPaquetesAlmacenEditar(int almacenId) async {
+  Future<List<Paquete>> getPaquetesEditar(int almacenId,paqueteId) async {
     final token = await _storage.read(key: 'token');
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token'
     };
-    final request =
-        http.Request('GET', Uri.parse('$_baseUrl/api/obtenerPaquetesAlmacenEditar'));
-    request.body = json.encode({"almacenId": almacenId});
+    final request = http.Request(
+        'GET', Uri.parse('$_baseUrl/api/obtenerPaquetesAlmacenEditar'));
+    request.body = json.encode({"almacenId": almacenId,"paqueteId":paqueteId});
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
@@ -273,8 +334,8 @@ class PaqueteService extends ChangeNotifier {
     }
   }
 
-  Future<void> editConsolidacion(int paqueteId, String peso,
-      List<int> listaIds, BuildContext context) async {
+  Future<void> editConsolidacion(int paqueteId, String peso, List<int> listaIds,
+      BuildContext context) async {
     mostrarLoading(context);
     final token = await _storage.read(key: 'token');
     final url = ApiService.baseUrl;

@@ -34,7 +34,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('Calculadora de peso'),
+        title: const Text('Calculadora de Envio'),
       ),
       body: SingleChildScrollView(
         child: Padding(

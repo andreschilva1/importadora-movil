@@ -12,7 +12,7 @@ class Paquete {
     int cliente_id;
     int? empleado_id;
     int almacen_id;
-    int consolidacion_estado_id;
+    int? consolidacion_estado_id;
     int? consolidado_id;
     String? createdAt;
     String? updatedAt;

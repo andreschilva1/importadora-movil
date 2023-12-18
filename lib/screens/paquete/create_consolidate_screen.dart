@@ -133,7 +133,9 @@ class _CreateConsolidateScreenState extends State<CreateConsolidateScreen> {
                                         Image.asset('Assets/paquete.jpg',
                                             width: 40, height: 40),
                                         Text(
-                                          "peso: ${paquete.peso} kg",
+                                          "id: ${paquete.id} peso: ${paquete.peso} kg",
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
                                             fontSize: 14,
                                             color: selectedIndex.contains(index)
@@ -143,7 +145,9 @@ class _CreateConsolidateScreenState extends State<CreateConsolidateScreen> {
                                           textAlign: TextAlign.center,
                                         ),
                                         Text(
-                                          "creado: ${convertirFechaALocal(paquete.createdAt!)}",
+                                          "codigo: ${paquete.codigo_rastreo}",
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
                                             fontSize: 14,
                                             color: selectedIndex.contains(index)

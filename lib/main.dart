@@ -1,16 +1,18 @@
+import 'dart:io';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:projectsw2_movil/models/push_message.dart';
 import 'package:projectsw2_movil/routes/app_routes.dart';
-import 'package:projectsw2_movil/screens/paquete/paquete_screen.dart';
-import 'package:projectsw2_movil/services/envio_service.dart';
-import 'package:projectsw2_movil/services/estado_envio_service.dart';
+import 'package:projectsw2_movil/screens/envio/envio_screen.dart';
 import 'package:projectsw2_movil/services/notification_service.dart';
 import 'package:projectsw2_movil/services/pais_services.dart';
 import 'package:projectsw2_movil/services/services.dart';
 import 'package:projectsw2_movil/theme/app_theme.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,11 +21,11 @@ void main() async {
   Stripe.merchantIdentifier = 'merchant.flutter.stripe.test';
   Stripe.urlScheme = 'flutterstripe';
 
-  FirebaseMessaging.onBackgroundMessage(
-      NotificationService.firebaseMessagingBackgroundHandler);
+  FirebaseMessaging.onBackgroundMessage(NotificationService.firebaseMessagingBackgroundHandler);
   await NotificationService.initializeFirebaseNotification();
-
-  NotificationService notificationService = NotificationService();
+  
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  NotificationService notificationService = NotificationService(flutterLocalNotificationsPlugin);
   notificationService.notificationListener();
   await notificationService.requestPermission();
 
@@ -35,12 +37,6 @@ class AppState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    /* FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const PaqueteScreen()),
-      );
-    }); */
 
     return MultiProvider(
       providers: [
@@ -59,16 +55,56 @@ class AppState extends StatelessWidget {
   }
 }
 
-class MyApp extends StatelessWidget {
-  final FlutterSecureStorage storage = const FlutterSecureStorage();
+class MyApp extends StatefulWidget {
 
   const MyApp({super.key});
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final FlutterSecureStorage storage = const FlutterSecureStorage();
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+  @override
+  void initState() {
+    super.initState();
+
+     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+
+       if (message.notification == null) return;
+      final notification = PushMessage(
+        messageId: message.messageId?.replaceAll(':','').replaceAll('%','') ?? '',
+        title: message.notification!.title ?? '',
+        body: message.notification!.body ?? '',
+        sentDate: message.sentTime ?? DateTime.now(),
+        data: message.data,
+        imageUrl: Platform.isAndroid 
+          ? message.notification!.android?.imageUrl
+          : message.notification!.apple?.imageUrl, 
+      );
+
+      dynamic type = notification.data?['type'];
+      if(type == 'registro-paquete')
+      {
+        navigatorKey.currentState?.pushNamed('paquete');
+      }
+      if (type == 'estado-envio') {
+        debugPrint(notification.data?['paquete_id']);
+        navigatorKey.currentState?.push(MaterialPageRoute(builder: (context) => EnvioScreen(paquete: int.parse(notification.data?['paquete_id']), peso: notification.data?['peso'])));
+      }
+    });
+
+  }
+
+  @override
   Widget build(BuildContext context) {
+    
     return MaterialApp(
       title: 'Your App Name',
       debugShowCheckedModeBanner: false,
+      navigatorKey: navigatorKey ,
       initialRoute: AppRoutes.initialRoute,
       routes: AppRoutes.getAppRoutes(context),
       theme: AppTheme.lightTheme,

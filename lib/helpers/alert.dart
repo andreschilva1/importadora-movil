@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projectsw2_movil/services/auth_services.dart';
-import 'package:projectsw2_movil/services/employee_service.dart';
-import 'package:projectsw2_movil/services/metodo_envio_service.dart';
-import 'package:projectsw2_movil/services/warehouse_service.dart';
-import 'package:provider/provider.dart';
+
 
 mostrarLoading(BuildContext context, {String? mensaje}) {
   showDialog(
@@ -164,8 +161,8 @@ showDialogCerrarSesion(BuildContext context, AuthService authService) {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5)),
               child: const Text('si'),
-              onPressed: () async {
-                await authService.logout();
+              onPressed: (){
+                authService.logout();
                 Navigator.pushNamed(context, 'login');
               },
             ),

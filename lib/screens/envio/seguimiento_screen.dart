@@ -73,97 +73,102 @@ class SeguimientoScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(10),
                             ),
                             padding: const EdgeInsets.all(5),
-                            child: Column(
-                              children: [
-                                RowCustom(
-                                  icon: Icons.local_shipping,
-                                  color: Colors.blue,
-                                  text: 'Transportista Seleccionado',
-                                  subText: seguimiento.carrierName ?? '',
-                                  child: TextButton(
-                                    onPressed: () async {
-                                      List<Carrier>? carriers =
-                                          await trakingService
-                                              .getCarriers(context);
-                                      if (context.mounted && carriers != null) {
-                                        Carrier? carrieSeleccionado =
-                                            await showSearch(
-                                          context: context,
-                                          delegate: CarrierSearchDelegate(
-                                            carriers: carriers,
-                                            carrierCodeAnterior:
-                                                seguimiento.carrierCode ?? 0,
-                                          ),
-                                        );
-                                        if (carrieSeleccionado != null &&
-                                            context.mounted) {
-                                          if (carrieSeleccionado.key != seguimiento.carrierCode) {
-                                            bool isChangeCarrier =
-                                                await trakingService
-                                                    .changeCarrier(
-                                              context,
-                                              numeroRastreo: numeroRastreo,
-                                              carrierOld:
-                                                  seguimiento.carrierCode ?? 0,
-                                              carrierNew:
-                                                  carrieSeleccionado.key ?? 0,
-                                            );
-
-                                            if (isChangeCarrier &&
-                                                context.mounted) {
-                                              mostrarLoading(context,
-                                                  mensaje: 'cargando eventos');
+                            child: Scrollbar(
+                              trackVisibility: true,
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    RowCustom(
+                                      icon: Icons.local_shipping,
+                                      color: Colors.blue,
+                                      text: 'Transportista Seleccionado',
+                                      subText: seguimiento.carrierName ?? '',
+                                      child: TextButton(
+                                        onPressed: () async {
+                                          List<Carrier>? carriers =
                                               await trakingService
-                                                  .fetchSeguimientos(
-                                                      numeroRastreo, context);
-                                              if (context.mounted) {
-                                                Navigator.of(context).pop();
+                                                  .getCarriers(context);
+                                          if (context.mounted && carriers != null) {
+                                            Carrier? carrieSeleccionado =
+                                                await showSearch(
+                                              context: context,
+                                              delegate: CarrierSearchDelegate(
+                                                carriers: carriers,
+                                                carrierCodeAnterior:
+                                                    seguimiento.carrierCode ?? 0,
+                                              ),
+                                            );
+                                            if (carrieSeleccionado != null &&
+                                                context.mounted) {
+                                              if (carrieSeleccionado.key != seguimiento.carrierCode) {
+                                                bool isChangeCarrier =
+                                                    await trakingService
+                                                        .changeCarrier(
+                                                  context,
+                                                  numeroRastreo: numeroRastreo,
+                                                  carrierOld:
+                                                      seguimiento.carrierCode ?? 0,
+                                                  carrierNew:
+                                                      carrieSeleccionado.key ?? 0,
+                                                );
+                              
+                                                if (isChangeCarrier &&
+                                                    context.mounted) {
+                                                  mostrarLoading(context,
+                                                      mensaje: 'cargando eventos');
+                                                  await trakingService
+                                                      .fetchSeguimientos(
+                                                          numeroRastreo, context);
+                                                  if (context.mounted) {
+                                                    Navigator.of(context).pop();
+                                                  }
+                                                }
                                               }
                                             }
                                           }
-                                        }
-                                      }
-                                    },
-                                    style: TextButton.styleFrom(
-                                      backgroundColor: Colors.transparent,
-                                      shadowColor: Colors.transparent,
+                                        },
+                                        style: TextButton.styleFrom(
+                                          backgroundColor: Colors.transparent,
+                                          shadowColor: Colors.transparent,
+                                        ),
+                                        child: Icon(
+                                          Icons.edit,
+                                          color: Colors.blueAccent.shade700,
+                                          size: 30,
+                                        ),
+                                      ),
                                     ),
-                                    child: Icon(
-                                      Icons.edit,
-                                      color: Colors.blueAccent.shade700,
-                                      size: 30,
+                                    Divider(
+                                      color: Colors.grey[300],
                                     ),
-                                  ),
+                                    RowCustom(
+                                      icon: Icons.source_outlined,
+                                      color: Colors.blue,
+                                      text: 'Numero Rastreo',
+                                      subText: numeroRastreo,
+                                    ),
+                                    Divider(
+                                      color: Colors.grey[300],
+                                    ),
+                                    RowCustom(
+                                      icon: Icons.list_alt_outlined,
+                                      color: Colors.yellowAccent[400]!,
+                                      text: 'Ultimo Estado',
+                                      subText: seguimiento.estadoActual ?? '',
+                                    ),
+                                    Divider(
+                                      color: Colors.grey[300],
+                                    ),
+                                    RowCustom(
+                                      icon: Icons.hourglass_bottom,
+                                      color: Colors.green[400]!,
+                                      text: 'Dias en Transito',
+                                      subText:
+                                          seguimiento.diasEnTransito.toString(),
+                                    ),
+                                  ],
                                 ),
-                                Divider(
-                                  color: Colors.grey[300],
-                                ),
-                                RowCustom(
-                                  icon: Icons.source_outlined,
-                                  color: Colors.blue,
-                                  text: 'Numero Rastreo',
-                                  subText: numeroRastreo,
-                                ),
-                                Divider(
-                                  color: Colors.grey[300],
-                                ),
-                                RowCustom(
-                                  icon: Icons.list_alt_outlined,
-                                  color: Colors.yellowAccent[400]!,
-                                  text: 'Ultimo Estado',
-                                  subText: seguimiento.estadoActual ?? '',
-                                ),
-                                Divider(
-                                  color: Colors.grey[300],
-                                ),
-                                RowCustom(
-                                  icon: Icons.hourglass_bottom,
-                                  color: Colors.green[400]!,
-                                  text: 'Dias en Transito',
-                                  subText:
-                                      seguimiento.diasEnTransito.toString(),
-                                ),
-                              ],
+                              ),
                             ),
                           ),
                           const SizedBox(

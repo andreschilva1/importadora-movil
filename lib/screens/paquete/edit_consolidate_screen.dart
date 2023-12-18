@@ -25,11 +25,11 @@ class _EditConsolidateScreenState extends State<EditConsolidateScreen> {
   @override
   initState() {
     super.initState();
-    actualizarPaquetes(widget.almacen);
+    actualizarPaquetes(widget.almacen,widget.paqueteId);
   }
 
-  Future<void> actualizarPaquetes(int almacenId) async {
-    final paquetesAlmacen = await Provider.of<PaqueteService>(context, listen: false).getPaquetesAlmacenEditar(almacenId);
+  Future<void> actualizarPaquetes(int almacenId,int paqueteId) async {
+    final paquetesAlmacen = await Provider.of<PaqueteService>(context, listen: false).getPaquetesEditar(almacenId,paqueteId);
 
     setState(() {
       paquetes = paquetesAlmacen;
@@ -108,7 +108,9 @@ class _EditConsolidateScreenState extends State<EditConsolidateScreen> {
                                 Image.asset('Assets/paquete.jpg',
                                     width: 40, height: 40),
                                 Text(
-                                  "peso: ${paquete.peso} kg",
+                                  "id: ${paquete.id} peso: ${paquete.peso} kg",
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: selectedIndex.contains(index)
@@ -118,7 +120,9 @@ class _EditConsolidateScreenState extends State<EditConsolidateScreen> {
                                   textAlign: TextAlign.center,
                                 ),
                                 Text(
-                                  "creado: ${convertirFechaALocal(paquete.createdAt!)}",
+                                  "codigo: ${paquete.codigo_rastreo}",
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: selectedIndex.contains(index)

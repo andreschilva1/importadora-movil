@@ -44,12 +44,16 @@ class AuthService extends ChangeNotifier {
       debugPrint('success login');
 
 
-      Navigator.of(context).pop();
+      if (context.mounted) {
+        Navigator.of(context).pop();
+      }
       return true;
     } else {
       debugPrint('Failed to login');
 
-      Navigator.of(context).pop();
+       if (context.mounted) {
+        Navigator.of(context).pop();
+      }
       return false;
       //throw Exception('Failed to login');
     }
@@ -78,7 +82,7 @@ class AuthService extends ChangeNotifier {
     if (token == null) {
       return false;
     }
-    debugPrint('token: ' + token);
+    debugPrint('token: $token');
     
     String url = '$_baseUrl/api/user';
     final response = await http.get(Uri.parse(url), headers: {
@@ -96,7 +100,7 @@ class AuthService extends ChangeNotifier {
     final token = await _storage.read(key: 'token');
     if (token != null) {
       String url = '$_baseUrl/api/logout';
-      final response = await http.get(Uri.parse(url), headers: {
+      await http.get(Uri.parse(url), headers: {
         'Authorization': 'Bearer $token',
       });
     }
@@ -127,7 +131,7 @@ class AuthService extends ChangeNotifier {
     final foto = await _storage.read(key: 'foto');
     final casillero = await _storage.read(key: 'casillero');
     final almacen = await _storage.read(key: 'almacen');
-    fetchUser();
+
     return User(
       id: int.tryParse(id ?? ''),
       name: name ?? '',
