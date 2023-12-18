@@ -5,7 +5,8 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:projectsw2_movil/helpers/helpers.dart';
 import 'package:projectsw2_movil/services/envio_service.dart';
 import 'package:projectsw2_movil/services/metodo_envio_service.dart';
-import 'package:projectsw2_movil/widgets/card_container.dart';
+import 'package:projectsw2_movil/services/paquete_service.dart';
+import 'package:projectsw2_movil/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
@@ -25,7 +26,7 @@ class _CreateEnvioScreenState extends State<CreateEnvioScreen> {
 
   Map<String, dynamic>? paymentIntent;
 
-  void makePayment(int total) async {
+   Future makePayment(int total) async {
     try {
       paymentIntent = await createPaymentIntent(total);
       var gpay = const PaymentSheetGooglePay(
@@ -33,17 +34,28 @@ class _CreateEnvioScreenState extends State<CreateEnvioScreen> {
         currencyCode: "US",
         testEnv: true,
       );
+
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
         paymentIntentClientSecret: paymentIntent!["client_secret"],
         style: ThemeMode.dark,
-        merchantDisplayName: "",
+        merchantDisplayName: "Importadora Campos",
         googlePay: gpay,
       ));
-
+     
       await displayPaymentSheet();
+      // Check the status of the PaymentIntent
+      final paymentIntentResponse = await Stripe.instance.retrievePaymentIntent(paymentIntent!["client_secret"]);
+      debugPrint("Payment status: ${paymentIntentResponse.status}");
+      if (paymentIntentResponse.status == PaymentIntentsStatus.Succeeded) {
+        return true;
+      } else {
+        return false;
+      }
     } catch (e) {
+      debugPrint("Error de pago: ${e.toString()}");
       Exception(e.toString());
+      return false;
     }
   }
 
@@ -111,6 +123,7 @@ class _CreateEnvioScreenState extends State<CreateEnvioScreen> {
                             labelText: 'Método de Envío',
                             prefixIcon: Icons.rule,
                           ),
+                          isExpanded: true,
                           value: metodoId,
                           onChanged: (value) {
                             setState(() {
@@ -128,9 +141,17 @@ class _CreateEnvioScreenState extends State<CreateEnvioScreen> {
                             return DropdownMenuItem<String>(
                               value: metodo.id.toString(),
                               child: Text(
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                   "${metodo.transportista}- Costo: ${int.parse(metodo.costoKg) * int.parse(widget.peso)}bs por ${metodo.metodo}"),
                             );
                           }).toList()),
+                      const SizedBox(height: 30),
+                      TextFrave(
+                          text: 'Total: ${total} Bs.',
+                          fontSize: 20,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,),
                       const SizedBox(height: 30),
                       Container(
                         alignment: Alignment.center,
@@ -143,16 +164,17 @@ class _CreateEnvioScreenState extends State<CreateEnvioScreen> {
                             child: Container(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 70, vertical: 15),
-                              child: const Text('Crear',
-                                  style: TextStyle(color: Colors.white))),
-                            onPressed: () {
+                              child: const Text('Enviar',
+                                  style: TextStyle(color: Colors.white),),),
+                            onPressed: () async{
                               if (formKey.currentState!.validate()) {
                                 FocusScope.of(context).unfocus();
-                                Provider.of<EnvioService>(context,
-                                        listen: false)
-                                    .createEnvio(
-                                        widget.paquete, metodoId!, context);
-                                // makePayment(total);
+                                bool estaPagado = await makePayment(total);
+                                if (estaPagado) {
+                                  Provider.of<EnvioService>(context,listen: false).createEnvio(widget.paquete, metodoId!, context);
+                                }else{
+                                  showBottomAlert(context: context, message: 'Error No se pudo realizar el pago intentelo de nuevo');
+                                }
                               }
                             }),
                       ),

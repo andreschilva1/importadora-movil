@@ -49,9 +49,14 @@ class _CreatePaqueteScreenState extends State<CreatePaqueteScreen> {
 
   Future<void> procesarImagen() async {
     try {
-      
+      final imageUrl = await _paqueteService.subirImagen(
+        imageFile: _imagenPaquete!,
+        context: context,
+      );
       final data = await _paqueteService.obtenerDatosDeImagen(
-          imageFile: _imagenPaquete!, context: context);
+        imageUrl: imageUrl,
+        context: context,
+      );
       _codigoRastreoController.text = data['numeroRastreo'];
       _numeroCasillero.text = data['casillero'];
       _photoPath = data['photoPath'];
@@ -60,7 +65,7 @@ class _CreatePaqueteScreenState extends State<CreatePaqueteScreen> {
       if (mounted) {
         showBottomAlert(
           context: context,
-          message: 'Error al subir la _imagenPaquete',
+          message: 'Error al subir la imagen',
         );
       }
     }
@@ -122,18 +127,27 @@ class _CreatePaqueteScreenState extends State<CreatePaqueteScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                _buildCodigoRastreoTextField(),
-                const SizedBox(height: 30),
-                _buildPesoTextField(),
-                const SizedBox(height: 30),
-                _buildBuscarClienteTextField(),
-                const SizedBox(height: 30),
-                _buildClienteEncontradoTextField(),
-                const SizedBox(height: 30),
-                _buildImagenPaquete(),
-                const SizedBox(height: 30),
+                const Text(
+                  'Sube una Imagen Para Escanear',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 20),
                 _buildAgregarImagenButton(),
-                const SizedBox(height: 30),
+                (_imagenPaquete != null)
+                    ? const SizedBox(height: 20)
+                    : const SizedBox(),
+                _buildImagenPaquete(),
+                const SizedBox(height: 20),
+                _buildPesoTextField(),
+                const SizedBox(height: 20),
+                _buildBuscarClienteTextField(),
+                const SizedBox(height: 20),
+                _buildClienteEncontradoTextField(),
+                const SizedBox(height: 20),
+                _buildCodigoRastreoTextField(),
+                const SizedBox(height: 20),
                 _buildRegistrarButton(),
               ],
             ),
@@ -261,16 +275,17 @@ class _CreatePaqueteScreenState extends State<CreatePaqueteScreen> {
                 borderRadius: BorderRadiusDirectional.circular(10),
               ),
             ),
-            onPressed: () async{
+            onPressed: () async {
               _imagenPaquete = await pickImageFromCamera();
               procesarImagen();
             },
             child: const Icon(
               Icons.add_a_photo_outlined,
               color: Colors.white,
-              size: 28 ,
+              size: 28,
             ),
           ),
+          SizedBox(width: 20),
           TextButton(
             style: TextButton.styleFrom(
               backgroundColor: Colors.black,
@@ -278,7 +293,7 @@ class _CreatePaqueteScreenState extends State<CreatePaqueteScreen> {
                 borderRadius: BorderRadiusDirectional.circular(10),
               ),
             ),
-            onPressed: () async{
+            onPressed: () async {
               _imagenPaquete = await pickImageFromGallery();
               procesarImagen();
             },

@@ -17,7 +17,7 @@ class EnvioScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context, listen: false).user!;
     return Scaffold(
-      drawer: const SidebarDrawer(),
+      //drawer: const SidebarDrawer(),
       appBar: AppBar(
         centerTitle: true,
         title: const Text('Envío'),
@@ -64,120 +64,129 @@ class EnvioScreen extends StatelessWidget {
                             padding: const EdgeInsets.all(10.0),
                             width: MediaQuery.of(context).size.width * .85,
                             height: authService.rol != "Cliente" ? 460 : 400,
-                            child: SingleChildScrollView(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  const Text(
-                                    "Información",
-                                    style: TextStyle(
-                                      fontSize: 25.0,
-                                      fontWeight: FontWeight.w800,
+                            child: Scrollbar(
+                              trackVisibility: true,
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    const Text(
+                                      "Información",
+                                      style: TextStyle(
+                                        fontSize: 25.0,
+                                        fontWeight: FontWeight.w800,
+                                      ),
                                     ),
-                                  ),
-                                  Divider(
-                                    color: Colors.grey[300],
-                                  ),
-                                  RowCustom(
-                                    icon: Icons.source,
-                                    color: Colors.blueAccent[400]!,
-                                    text: "Informacion de Rastreo",
-                                    subText:snapshot.data!.codigoRastreo == null
-                                            ? "Codigo no registrado"
-                                            : snapshot.data!.codigoRastreo!,
-                                    child: InkWell(
-                                      onTap: () {
-                                        if (snapshot.data!.codigoRastreo == null) {
-                                          showBottomAlert(
-                                              context: context,
-                                              message:
-                                                  "El envío no tiene un código de rastreo.",
-                                              color: Colors.red);
-                                          return;
-                                        }
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  SeguimientoScreen(numeroRastreo: snapshot.data!.codigoRastreo!),
-                                            )
-                                        );
-                                      },
-                                      child: Icon(Icons.visibility_outlined,
-                                          color: Colors.blueAccent.shade700,
-                                          size: 30),
+                                    Divider(
+                                      color: Colors.grey[300],
                                     ),
-                                  ),
-                                  const SizedBox(
-                                    height: 20.0,
-                                  ),
-                                  RowCustom(
-                                    icon: Icons.money_off,
-                                    color: Colors.yellowAccent[400]!,
-                                    text: "Costo",
-                                    subText: "${snapshot.data!.costo} Bs",
-                                  ),
-                                  const SizedBox(
-                                    height: 20.0,
-                                  ),
-                                  RowCustom(
-                                    icon: Icons.local_shipping,
-                                    color: Colors.pinkAccent[400]!,
-                                    text: "Transportista",
-                                    subText: snapshot.data!.transportista,
-                                  ),
-                                  const SizedBox(
-                                    height: 20.0,
-                                  ),
-                                  RowCustom(
-                                    icon: Icons.airplane_ticket,
-                                    color: Colors.black,
-                                    text: "Método",
-                                    subText: snapshot.data!.metodo,
-                                  ),
-                                  const SizedBox(
-                                    height: 20.0,
-                                  ),
-                                  RowCustom(
-                                    icon: Icons.sell,
-                                    color: Colors.lightBlue,
-                                    text: "Costo por Kg",
-                                    subText: snapshot.data!.costoKg,
-                                  ),
-                                  const SizedBox(
-                                    height: 20.0,
-                                  ),
-                                  RowCustom(
-                                    icon: Icons.business,
-                                    color: Colors.green,
-                                    text: "Estado del Envío",
-                                    subText: snapshot.data!.name,
-                                  ),
-                                  const SizedBox(
-                                    height: 20.0,
-                                  ),
-                                  authService.rol != "Cliente"
-                                      ? TextButton(
-                                          onPressed: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      EditEnvioScreen(
-                                                        envio:
-                                                            snapshot.data!.id,
-                                                        codigo: snapshot.data!
-                                                            .codigoRastreo,
-                                                        metodo: snapshot.data!
-                                                            .envioEstadoId,
-                                                      )),
-                                            );
-                                          },
-                                          child: const Text('Actualizar',
-                                              style: TextStyle(
-                                                  color: Colors.white)))
-                                      : const SizedBox(),
-                                ],
+                                    SingleChildScrollView(
+                                      child: Column(
+                                        children: [
+                                          RowCustom(
+                                            icon: Icons.source,
+                                            color: Colors.blueAccent[400]!,
+                                            text: "Informacion de Rastreo",
+                                            subText:snapshot.data!.codigoRastreo == null
+                                                    ? "Codigo no registrado"
+                                                    : snapshot.data!.codigoRastreo!,
+                                            child: InkWell(
+                                              onTap: () {
+                                                if (snapshot.data!.codigoRastreo == null) {
+                                                  showBottomAlert(
+                                                      context: context,
+                                                      message:
+                                                          "El envío no tiene un código de rastreo.",
+                                                      color: Colors.red);
+                                                  return;
+                                                }
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          SeguimientoScreen(numeroRastreo: snapshot.data!.codigoRastreo!),
+                                                    )
+                                                );
+                                              },
+                                              child: Icon(Icons.visibility_outlined,
+                                                  color: Colors.blueAccent.shade700,
+                                                  size: 30),
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            height: 20.0,
+                                          ),
+                                          RowCustom(
+                                            icon: Icons.money_off,
+                                            color: Colors.yellowAccent[400]!,
+                                            text: "Costo",
+                                            subText: "${snapshot.data!.costo} Bs",
+                                          ),
+                                          const SizedBox(
+                                            height: 20.0,
+                                          ),
+                                          RowCustom(
+                                            icon: Icons.local_shipping,
+                                            color: Colors.pinkAccent[400]!,
+                                            text: "Transportista",
+                                            subText: snapshot.data!.transportista,
+                                          ),
+                                          const SizedBox(
+                                            height: 20.0,
+                                          ),
+                                          RowCustom(
+                                            icon: Icons.airplane_ticket,
+                                            color: Colors.black,
+                                            text: "Método",
+                                            subText: snapshot.data!.metodo,
+                                          ),
+                                          const SizedBox(
+                                            height: 20.0,
+                                          ),
+                                          RowCustom(
+                                            icon: Icons.sell,
+                                            color: Colors.lightBlue,
+                                            text: "Costo por Kg",
+                                            subText: snapshot.data!.costoKg,
+                                          ),
+                                          const SizedBox(
+                                            height: 20.0,
+                                          ),
+                                          RowCustom(
+                                            icon: Icons.business,
+                                            color: Colors.green,
+                                            text: "Estado del Envío",
+                                            subText: snapshot.data!.name,
+                                          ),
+                                          const SizedBox(
+                                            height: 20.0,
+                                          ),
+                                          authService.rol != "Cliente"
+                                              ? TextButton(
+                                                  onPressed: () {
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              EditEnvioScreen(
+                                                                envio:
+                                                                    snapshot.data!.id,
+                                                                codigo: snapshot.data!
+                                                                    .codigoRastreo,
+                                                                metodo: snapshot.data!
+                                                                    .envioEstadoId,
+                                                              )),
+                                                    );
+                                                  },
+                                                  child: const Text('Actualizar',
+                                                      style: TextStyle(
+                                                          color: Colors.white)))
+                                              : const SizedBox(),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ))),
                   ),

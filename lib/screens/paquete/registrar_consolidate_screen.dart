@@ -21,10 +21,7 @@ class _RegistrarConsolidateScreenState
     extends State<RegistrarConsolidateScreen> {
   File? _imagenPaquete;
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _codigoRastreoController =
-      TextEditingController();
   final TextEditingController _pesoController = TextEditingController();
-  final TextEditingController _numeroCasillero = TextEditingController();
   late PaqueteService _paqueteService;
   String _photoPath = '';
   List<Paquete> paquetes = [];
@@ -56,16 +53,16 @@ class _RegistrarConsolidateScreenState
 
   Future<void> procesarImagen() async {
     try {
-      final data = await _paqueteService.obtenerDatosDeImagen(
-          imageFile: _imagenPaquete!, context: context);
-      _codigoRastreoController.text = data['numeroRastreo'];
-      _numeroCasillero.text = data['casillero'];
-      _photoPath = data['photoPath'];
+      final imageUrl = await _paqueteService.subirImagen(
+        imageFile: _imagenPaquete!,
+        context: context,
+      );
+      _photoPath = imageUrl;
     } catch (e) {
       if (mounted) {
         showBottomAlert(
           context: context,
-          message: 'Error al subir la _imagenPaquete',
+          message: 'Error al subir la imagen',
         );
       }
     }
@@ -88,7 +85,7 @@ class _RegistrarConsolidateScreenState
           await _paqueteService.registrarConsolidacion(
             paqueteId: widget.paquete.id,
             photoPath: _photoPath,
-            codigoRastreo: _codigoRastreoController.text.trim(),
+            codigoRastreo: '',
             peso: _pesoController.text.trim(),
           );
           //navegar a la pantalla de home
@@ -118,7 +115,7 @@ class _RegistrarConsolidateScreenState
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('Registrar Paquete'),
+        title: const Text('Registrar Consolidacion'),
       ),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
@@ -159,7 +156,9 @@ class _RegistrarConsolidateScreenState
                             Image.asset('Assets/paquete.jpg',
                                 width: 40, height: 40),
                             Text(
-                              "peso: ${paquete.peso} kg",
+                              "id: ${paquete.id} peso: ${paquete.peso} kg",
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 fontSize: 14,
                                 color:  Colors.black,
@@ -167,7 +166,9 @@ class _RegistrarConsolidateScreenState
                               textAlign: TextAlign.center,
                             ),
                             Text(
-                              "creado: ${convertirFechaALocal(paquete.createdAt!)}",
+                              "codigo: ${paquete.codigo_rastreo}",
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 fontSize: 14,
                                 color:  Colors.black,
@@ -182,8 +183,6 @@ class _RegistrarConsolidateScreenState
                   ),
                 ),
                 const SizedBox(height: 10),
-                _buildCodigoRastreoTextField(),
-                const SizedBox(height: 30),
                 _buildPesoTextField(),
                 const SizedBox(height: 30),
                 _buildImagenPaquete(),
@@ -196,26 +195,6 @@ class _RegistrarConsolidateScreenState
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildCodigoRastreoTextField() {
-    return TextFormField(
-      autocorrect: false,
-      keyboardType: TextInputType.text,
-      decoration: InputDecorations.authInputDecoration(
-        hintText: 'Codigo de rastreo',
-        labelText: 'Codigo de rastreo del paquete',
-        prefixIcon: Icons.code,
-      ),
-      controller: _codigoRastreoController,
-      onChanged: (value) => value,
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Ingrese el codigo de rastreo';
-        }
-        return null;
-      },
     );
   }
 
@@ -233,9 +212,6 @@ class _RegistrarConsolidateScreenState
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'Ingrese el peso del paquete';
-        }
-        if (int.parse(value) < pesoTotal) {
-          return 'El peso debe ser mayor al peso total';
         }
         return null;
       },
@@ -264,7 +240,10 @@ class _RegistrarConsolidateScreenState
             ),
             onPressed: () async {
               _imagenPaquete = await pickImageFromCamera();
-              procesarImagen();
+              await procesarImagen();
+              setState(() {
+                
+              });
             },
             child: const Icon(
               Icons.add_a_photo_outlined,
@@ -281,7 +260,10 @@ class _RegistrarConsolidateScreenState
             ),
             onPressed: () async {
               _imagenPaquete = await pickImageFromGallery();
-              procesarImagen();
+              await procesarImagen();
+              setState(() {
+                
+              });
             },
             child: const Icon(
               Icons.add_photo_alternate_outlined,

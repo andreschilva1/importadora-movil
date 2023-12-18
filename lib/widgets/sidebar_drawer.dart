@@ -19,20 +19,49 @@ class SidebarDrawer extends StatelessWidget {
           bottomRight: Radius.circular(30),
         ),
       ),
-      child: ListView(
-        children: user!.rol == "Cliente"
-            ? _getListaDerutas(
-                context: context,
-                authService: authService,
-                routes: AppRoutes.routesCliente,
-              )
-            : _getListaDerutas(
-                context: context,
-                authService: authService,
-                routes: AppRoutes.routes,
-              ),
-      ),
+      child:
+          ListView(children: _getDrawerItems(context, authService, user!.rol)),
     );
+  }
+
+  List<Widget> _getDrawerItems(
+      BuildContext context, AuthService authService, String rol) {
+    switch (rol) {
+      case "Cliente":
+        return _getListaDerutas(
+          context: context,
+          authService: authService,
+          routes: AppRoutes.routesCliente,
+        );
+      case "Personal Administrativo":
+        return _getListaDerutas(
+          context: context,
+          authService: authService,
+          routes: AppRoutes.routesAdministrativo,
+        );
+      case "Encargado de Almacen":
+        return _getListaDerutas(
+          context: context,
+          authService: authService,
+          routes: AppRoutes.routesEncargadoAlmacen,
+        );
+      case "Encargado de Envio":
+        return _getListaDerutas(
+          context: context,
+          authService: authService,
+          routes: AppRoutes.routesEncargadoEnvio,
+        );
+      case "Encargado de compra":
+        return _getListaDerutas(
+          context: context,
+          authService: authService,
+          routes: AppRoutes.routesEncargadoCompra,
+        );
+      default:
+        return [
+          Container(),
+        ];
+    }
   }
 
   List<Widget> _getListaDerutas(

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "963564618375",
+    "project_id": "notificaciones-importadora",
+    "storage_bucket": "notificaciones-importadora.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:963564618375:android:066914288173f99e136e22",
+        "android_client_info": {
+          "package_name": "com.importadora.projectsw2_movil"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCs2Qcntcdvum4m9XeJTBVU8Oo_7kIT4Sw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

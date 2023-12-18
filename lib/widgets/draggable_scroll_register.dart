@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:projectsw2_movil/helpers/helpers.dart';
 import 'package:projectsw2_movil/services/services.dart';
@@ -75,10 +76,21 @@ class DraggableScrollRegister extends StatelessWidget {
               onPressed: () async {
                 if (formKey.currentState?.validate() ?? false) {
                   FocusScope.of(context).unfocus();
-                  authService.register(name.text.trim(), email.text.trim(),
-                      password.text.trim(), celular.text.trim());
+                  authService.register(
+                    name.text.trim(),
+                    email.text.trim(),
+                    password.text.trim(),
+                    celular.text.trim(),
+                  );
+
+                  FirebaseMessaging firebase = FirebaseMessaging.instance;
+                  final String? tokenDevice = await firebase.getToken();
                   final succes = await authService.login(
-                      email.text.trim(), password.text.trim() , context);
+                    email.text.trim(),
+                    password.text.trim(),
+                    context,
+                    tokenDevice!,
+                  );
                   if (succes) {
                     if (context.mounted) {
                       Navigator.pushReplacementNamed(context, 'home');
